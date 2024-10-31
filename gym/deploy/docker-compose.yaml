@@ -1,0 +1,25 @@
+services:
+  mosquitto:
+    image: eclipse-mosquitto
+    hostname: mosquitto
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto:/mosquitto
+    networks:
+      - gym_network
+
+  gym:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    depends_on:
+      - mosquitto
+    restart: unless-stopped
+    networks:
+      - gym_network
+
+networks:
+  gym_network:
