@@ -8,7 +8,7 @@ import (
 
 func main() {
 	opts := MQTT.NewClientOptions()
-	opts.AddBroker("tcp://localhost:1883")
+	opts.AddBroker("tcp://mosquitto:1883")
 	opts.SetClientID("1")
 	opts.SetUsername("admin")
 	opts.SetPassword("admin")
