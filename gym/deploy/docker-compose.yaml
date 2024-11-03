@@ -17,6 +17,13 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - mosquitto
+    environment:
+      MOSQUITTO_DOMAIN: ${MOSQUITTO_DOMAIN}
+      MQTT_PORT: ${MQTT_PORT}
+      MQTT_CLIENT_ID: ${MQTT_CLIENT_ID}
+      MQTT_USERNAME: ${MQTT_USERNAME}
+      MQTT_PASSWORD: ${MQTT_PASSWORD}
+      MQTT_CLEAN_SESSION: ${MQTT_CLEAN_SESSION}
     restart: unless-stopped
     networks:
       - gym_network

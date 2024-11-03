@@ -1,39 +1,36 @@
 package main
 
 import (
-	"fmt"
+	"gym/internal/config"
+	"gym/internal/mqtt"
+	"gym/pkg/logger"
 	"os"
-	MQTT "github.com/eclipse/paho.mqtt.golang"
+	"os/signal"
+	"syscall"
 )
 
 func main() {
-	opts := MQTT.NewClientOptions()
-	opts.AddBroker("tcp://mosquitto:1883")
-	opts.SetClientID("1")
-	opts.SetUsername("admin")
-	opts.SetPassword("admin")
-	opts.SetCleanSession(false)
 
-	receiveCount := 0
-	choke := make(chan [2]string)
-	opts.SetDefaultPublishHandler(func(client MQTT.Client, msg MQTT.Message) {
-		choke <- [2]string{msg.Topic(), string(msg.Payload())}
-	})
+	logger.Logger().Println("Starting MQTT client")
 
-	client := MQTT.NewClient(opts)
-	if token := client.Connect(); token.Wait() && token.Error() != nil {
-		panic(token.Error())
-	}
+	var mosquittoClient mqtt.Client = mqtt.NewMosquittoClient(
+		config.MosquittoDomain,
+		config.MqttPort,
+		config.MqttClientId,
+		config.MqttUsername,
+		config.MqttPassword,
+		config.MqttCleanSession == "true",
+	)
 
-	qos := 0
-	if token := client.Subscribe("/hello", byte(qos), nil); token.Wait() && token.Error() != nil {
-		fmt.Println(token.Error())
-		os.Exit(1)
-	}
+	defer mosquittoClient.Disconnect()
 
-	for receiveCount < 2 {
-		incoming := <-choke
-		fmt.Printf("RECEIVED TOPIC: %s MESSAGE: %s\n", incoming[0], incoming[1])
-		receiveCount++
-	}
+	subscriber := mqtt.NewSubscriber(mosquittoClient)
+
+	subscriber.Setup()
+
+	waitForExit := make(chan os.Signal, 1)
+	signal.Notify(waitForExit, syscall.SIGINT, syscall.SIGTERM)
+	<-waitForExit
+
+	logger.Logger().Println("Exiting MQTT client")
 }
