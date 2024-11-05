@@ -1,5 +1,9 @@
 package database
 
-type Repository interface {
-	SaveExercise(exercise Exercise) error
+import (
+	"gym/internal/entities"
+)
+
+type ExerciseRepository interface {
+	SaveExercise(exercise entities.Exercise) error
 }
