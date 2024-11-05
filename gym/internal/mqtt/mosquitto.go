@@ -37,7 +37,8 @@ func NewMosquittoClient(
 	if token := pahoClient.Connect(); token.Wait() && token.Error() != nil {
 		logger.Logger().Fatal(token.Error())
 	}
-	client := &MosquittoClient{
+
+	return &MosquittoClient{
 		pahoClient,
 		mqttDomain,
 		mqttPort,
@@ -46,8 +47,6 @@ func NewMosquittoClient(
 		mqttPassword,
 		mqttCleanSession,
 	}
-
-	return client
 }
 
 func (c *MosquittoClient) Subscribe(topic string, handler func(payload []byte)) error {
