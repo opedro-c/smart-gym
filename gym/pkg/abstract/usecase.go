@@ -1,22 +1,35 @@
 package abstract
 
-import "database/sql"
+import (
+	"database/sql"
+	"fmt"
+	"reflect"
+)
 
-type UseCase[T any] interface {
-	Execute(input T) error
+type UseCase[T any, S any] interface {
+	Execute(input T) (S, error)
 }
 
-type AbstractUseCase[T any] struct {
-	UseCase[T]
-	Tx *sql.Tx
-
+type UseCaseTransaction[T any, S any] struct {
+	tx *sql.Tx
+	useCase UseCase[T, S]
+	input T
 }
 
-func (a *AbstractUseCase[T]) Execute(input T) error {
-	if err := a.UseCase.Execute(input); err != nil {
-		a.Tx.Rollback()
-		return err
+func NewUseCaseTransaction[T any, S any](tx *sql.Tx, useCase UseCase[T, S], input T) *UseCaseTransaction[T, S] {
+	return &UseCaseTransaction[T, S]{
+		tx: tx,
+		useCase: useCase,
+		input: input,
 	}
-	a.Tx.Commit()
-	return nil
+}
+
+func (a *UseCaseTransaction[T, S]) Execute() (output S, err error) {
+	fmt.Print("Executing transaction for use case: ", reflect.TypeFor[T]())
+	if output, err = a.useCase.Execute(a.input); err != nil {
+		a.tx.Rollback()
+		return Zero(output), err
+	}
+	a.tx.Commit()
+	return output, nil
 }

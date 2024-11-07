@@ -26,9 +26,7 @@ func main() {
 
 	subscriber := mqtt.NewSubscriber(mosquittoClient)
 
-	if err := subscriber.Setup(); err != nil {
-		logger.Logger().Fatalf("Error setting up subscriber: %v", err)
-	}
+	subscriber.Setup()
 
 	waitForExit := make(chan os.Signal, 1)
 	signal.Notify(waitForExit, syscall.SIGINT, syscall.SIGTERM)

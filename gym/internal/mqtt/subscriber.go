@@ -1,8 +1,10 @@
 package mqtt
 
 import (
+	"encoding/json"
 	"gym/internal/business"
-	"gym/pkg/logger"
+	"gym/internal/database/sqlite"
+	"gym/pkg/abstract"
 )
 
 // Subscriber routes each incoming message to the appropriate handler
@@ -18,16 +20,21 @@ func NewSubscriber(mqttClient Client) *Subscriber {
 	return &Subscriber{mqttClient}
 }
 
-func (s *Subscriber) Setup() error {
-	err := s.mqttClient.Subscribe("/gym/exercise", func(payload []byte) {
-		logger.Logger().Println(string(payload[:]))
-		(&business.AuthService{
-			Test: 1,
-		}).TestFunc()
-	})
+func (s *Subscriber) Setup() {
 
-	if err != nil {
-		return err
-	}
-	return nil
+	s.mqttClient.Subscribe("/gym/exercise", func(payload []byte) {
+
+		db := sqlite.GetConnection()
+		tx, _ := db.Begin()
+
+		var input business.InputSaveExerciseUseCase
+		json.Unmarshal(payload, &input)
+
+		abstract.NewUseCaseTransaction(
+			tx,
+			business.NewSaveExerciseUseCase(sqlite.NewExerciseRepository(tx)),
+			input,
+		).
+		Execute()
+	})
 }

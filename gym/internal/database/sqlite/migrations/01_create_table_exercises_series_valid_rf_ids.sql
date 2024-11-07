@@ -13,6 +13,8 @@ CREATE TABLE [IF NOT EXISTS] series(
     repetitions INTEGER NOT NULL,
     weight REAL NOT NULL,
     exercise_id INTEGER NOT NULL,
+
+    FOREIGN KEY(exercise_id) REFERENCES exercises(id)
 );
 
 CREATE TABLE [IF NOT EXISTS] valid_rf_ids (

@@ -1,34 +1,39 @@
 package business
 
 import (
-	"database/sql"
 	"gym/internal/database"
-	"gym/pkg/abstract"
+	"gym/internal/entities"
+	"gym/pkg/logger"
 )
 
 type SaveExerciseUseCase[T InputSaveExerciseUseCase] struct {
-	*abstract.AbstractUseCase[T]
 	exerciseRepo database.ExerciseRepository
-	tx           *sql.Tx
 }
 
 type InputSaveExerciseUseCase struct {
-	RfId string
+	Exercise entities.Exercise `json:"exercise"`
 }
 
-func NewSaveExerciseUseCase[T InputSaveExerciseUseCase](tx *sql.Tx, exerciseRepo database.ExerciseRepository) *SaveExerciseUseCase[T] {
+type OutputSaveExerciseUseCase struct{}
+
+func NewSaveExerciseUseCase[T InputSaveExerciseUseCase](exerciseRepo database.ExerciseRepository) *SaveExerciseUseCase[T] {
 	return &SaveExerciseUseCase[T]{
-		AbstractUseCase: &abstract.AbstractUseCase[T]{Tx: tx},
-		tx:           tx,
 		exerciseRepo: exerciseRepo,
 	}
 }
 
-func (u *SaveExerciseUseCase[T]) Execute(input InputSaveExerciseUseCase) error {
-	_, err := u.exerciseRepo.GetRfId(u.tx, input.RfId)
-
+func (u *SaveExerciseUseCase[T]) Execute(input InputSaveExerciseUseCase) (output OutputSaveExerciseUseCase, err error) {
+	rfId, err := u.exerciseRepo.GetRfId(input.Exercise.UserRfId)
 	if err != nil {
-		return err
+		return output, err
 	}
-	return nil
+	if rfId == "" {
+		logger.Logger().Printf("RfId %s not found", input.Exercise.UserRfId)
+		return output, nil
+	}
+
+	if err = u.exerciseRepo.SaveExercise(input.Exercise); err != nil {
+		return output, err
+	}
+	return output, nil
 }
