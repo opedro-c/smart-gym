@@ -19,14 +19,16 @@ func main() {
 		config.MqttClientId,
 		config.MqttUsername,
 		config.MqttPassword,
-		config.MqttCleanSession == "true",
+		config.MqttCleanSession == "false",
 	)
 
 	defer mosquittoClient.Disconnect()
 
 	subscriber := mqtt.NewSubscriber(mosquittoClient)
 
-	subscriber.Setup()
+	if err := subscriber.Setup(); err != nil {
+		logger.Logger().Fatalf("Error setting up subscriber: %v", err)
+	}
 
 	waitForExit := make(chan os.Signal, 1)
 	signal.Notify(waitForExit, syscall.SIGINT, syscall.SIGTERM)

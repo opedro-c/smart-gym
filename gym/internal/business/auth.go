@@ -1,12 +1,34 @@
 package business
 
-import "gym/pkg/logger"
+import (
+	"database/sql"
+	"gym/internal/database"
+	"gym/pkg/abstract"
+)
 
-type AuthService struct {
-	Test int
+type SaveExerciseUseCase[T InputSaveExerciseUseCase] struct {
+	*abstract.AbstractUseCase[T]
+	exerciseRepo database.ExerciseRepository
+	tx           *sql.Tx
 }
 
-func (a *AuthService) TestFunc() {
-	a.Test = 1
-	logger.Logger().Println("TestFunc")
+type InputSaveExerciseUseCase struct {
+	RfId string
+}
+
+func NewSaveExerciseUseCase[T InputSaveExerciseUseCase](tx *sql.Tx, exerciseRepo database.ExerciseRepository) *SaveExerciseUseCase[T] {
+	return &SaveExerciseUseCase[T]{
+		AbstractUseCase: &abstract.AbstractUseCase[T]{Tx: tx},
+		tx:           tx,
+		exerciseRepo: exerciseRepo,
+	}
+}
+
+func (u *SaveExerciseUseCase[T]) Execute(input InputSaveExerciseUseCase) error {
+	_, err := u.exerciseRepo.GetRfId(u.tx, input.RfId)
+
+	if err != nil {
+		return err
+	}
+	return nil
 }

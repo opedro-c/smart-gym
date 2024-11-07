@@ -3,16 +3,16 @@ package entities
 type Exercise struct {
 	Id          uint64
 	UserRfId    string
-	Started_at  string
-	Finished_at string
+	StartedAt  string
+	FinishedAt string
 	Name        string
 }
 
 type Series struct {
 	Id          uint64
-	Started_at  string
-	Finished_at string
-	Repetitions uint64
-	Weight      float64
+	StartedAt  string
+	FinishedAt string
+	Repetitions uint8
+	Weight      float32
 	ExerciseId  uint64
 }

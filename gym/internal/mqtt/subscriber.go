@@ -18,11 +18,16 @@ func NewSubscriber(mqttClient Client) *Subscriber {
 	return &Subscriber{mqttClient}
 }
 
-func (s *Subscriber) Setup() {
-	s.mqttClient.Subscribe("/gym/exercise", func(payload []byte) {
+func (s *Subscriber) Setup() error {
+	err := s.mqttClient.Subscribe("/gym/exercise", func(payload []byte) {
 		logger.Logger().Println(string(payload[:]))
 		(&business.AuthService{
 			Test: 1,
 		}).TestFunc()
 	})
+
+	if err != nil {
+		return err
+	}
+	return nil
 }

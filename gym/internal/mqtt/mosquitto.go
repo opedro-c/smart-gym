@@ -52,10 +52,10 @@ func NewMosquittoClient(
 func (c *MosquittoClient) Subscribe(topic string, handler func(payload []byte)) error {
 	logger.Logger().Printf("Subscribing to topic: %s\n", topic)
 	mosquittoHandler := func(client MQTT.Client, msg MQTT.Message) {
-		logger.Logger().Printf("Topic: %s\nMessage: %s\n", msg.Topic(), msg.Payload())
+		logger.Logger().Printf("\nTopic: %s\nMessage: %s\n", msg.Topic(), msg.Payload())
 		handler(msg.Payload())
 	}
-	if token := c.pahoClient.Subscribe(topic, 0, mosquittoHandler); token.Wait() && token.Error() != nil {
+	if token := c.pahoClient.Subscribe(topic, 2, mosquittoHandler); token.Wait() && token.Error() != nil {
 		logger.Logger().Println(token.Error())
 		return token.Error()
 	}
