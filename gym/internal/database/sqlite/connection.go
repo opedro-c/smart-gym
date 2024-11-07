@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"gym/pkg/logger"
 	"path/filepath"
+	 _ "github.com/mattn/go-sqlite3"
 	"sync"
 )
 
