@@ -11,24 +11,20 @@ type UseCase[T any, S any] interface {
 }
 
 type UseCaseTransaction[T any, S any] struct {
-	tx *sql.Tx
+	tx      *sql.Tx
 	useCase UseCase[T, S]
-	input T
+	input   T
 }
 
 func NewUseCaseTransaction[T any, S any](tx *sql.Tx, useCase UseCase[T, S], input T) *UseCaseTransaction[T, S] {
-	return &UseCaseTransaction[T, S]{
-		tx: tx,
-		useCase: useCase,
-		input: input,
-	}
+	return &UseCaseTransaction[T, S]{tx, useCase, input}
 }
 
 func (a *UseCaseTransaction[T, S]) Execute() (output S, err error) {
 	fmt.Print("Executing transaction for use case: ", reflect.TypeFor[T]())
 	if output, err = a.useCase.Execute(a.input); err != nil {
 		a.tx.Rollback()
-		return Zero(output), err
+		return output, err
 	}
 	a.tx.Commit()
 	return output, nil

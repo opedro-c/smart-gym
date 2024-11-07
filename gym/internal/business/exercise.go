@@ -12,6 +12,7 @@ type SaveExerciseUseCase[T InputSaveExerciseUseCase] struct {
 
 type InputSaveExerciseUseCase struct {
 	Exercise entities.Exercise `json:"exercise"`
+	Series   []entities.Series `json:"series"`
 }
 
 type OutputSaveExerciseUseCase struct{}
@@ -33,7 +34,13 @@ func (u *SaveExerciseUseCase[T]) Execute(input InputSaveExerciseUseCase) (output
 	}
 
 	if err = u.exerciseRepo.SaveExercise(input.Exercise); err != nil {
+		logger.Logger().Println()
 		return output, err
 	}
+
+	if err = u.exerciseRepo.SaveSeriesInBatch(input.Series); err != nil {
+		return output, err
+	}
+
 	return output, nil
 }
