@@ -21,7 +21,7 @@ func NewUseCaseTransaction[T any, S any](tx *sql.Tx, useCase UseCase[T, S], inpu
 }
 
 func (a *UseCaseTransaction[T, S]) Execute() (output S, err error) {
-	fmt.Print("Executing transaction for use case: ", reflect.TypeFor[T]())
+	fmt.Print("Executing transaction for use case: ", reflect.TypeOf(a.useCase))
 	if output, err = a.useCase.Execute(a.input); err != nil {
 		a.tx.Rollback()
 		return output, err

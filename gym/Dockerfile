@@ -4,7 +4,11 @@ WORKDIR /app
 
 COPY . .
 
+RUN apk add build-base
+
 RUN go mod download
+
+ENV CGO_ENABLED=1
 
 RUN go build -o main ./cmd/main.go
 

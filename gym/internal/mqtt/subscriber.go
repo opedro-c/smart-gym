@@ -5,6 +5,7 @@ import (
 	"gym/internal/business"
 	"gym/internal/database/sqlite"
 	"gym/pkg/abstract"
+	"gym/pkg/logger"
 )
 
 // Subscriber routes each incoming message to the appropriate handler
@@ -25,7 +26,11 @@ func (s *Subscriber) Setup() {
 	s.mqttClient.Subscribe("/gym/exercise", func(payload []byte) {
 
 		db := sqlite.GetConnection()
-		tx, _ := db.Begin()
+		tx, err := db.Begin()
+
+		if err != nil {
+			logger.Logger().Fatalf("Error starting transaction: %v", err)
+		}
 
 		var input business.InputSaveExerciseUseCase
 		json.Unmarshal(payload, &input)
@@ -34,7 +39,6 @@ func (s *Subscriber) Setup() {
 			tx,
 			business.NewSaveExerciseUseCase(sqlite.NewExerciseRepository(tx)),
 			input,
-		).
-		Execute()
+		).Execute()
 	})
 }
