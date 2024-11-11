@@ -1,12 +1,12 @@
-CREATE TABLE [IF NOT EXISTS] exercises(
+CREATE TABLE IF NOT EXISTS exercises(
     id INTEGER PRIMARY KEY,
     user_rf_id TEXT NOT NULL,
     started_at TEXT NOT NULL,
     finished_at TEXT NOT NULL,
-    name TEXT NOT NULL,
+    name TEXT NOT NULL
 );
 
-CREATE TABLE [IF NOT EXISTS] series(
+CREATE TABLE IF NOT EXISTS series(
     id INTEGER PRIMARY KEY,
     started_at TEXT NOT NULL,
     finished_at TEXT NOT NULL,
@@ -17,6 +17,6 @@ CREATE TABLE [IF NOT EXISTS] series(
     FOREIGN KEY(exercise_id) REFERENCES exercises(id)
 );
 
-CREATE TABLE [IF NOT EXISTS] valid_rf_ids (
+CREATE TABLE IF NOT EXISTS valid_rf_ids (
     rf_id TEXT PRIMARY KEY
 );
