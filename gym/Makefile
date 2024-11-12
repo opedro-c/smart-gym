@@ -23,18 +23,27 @@ build:
 
 .PHONY: debug
 debug:
+	if [ ! -d "$(BUILD_DIR)" ]; then \
+		make build; \
+	fi
 	gdb $(BUILD_DIR)/$(APP_NAME)
 
 .PHONY: clean
 clean:
 	rm -rf $(BUILD_DIR)/*
 
+.PHONY: migrate
+migrate:
+	for file in internal/database/sqlite/migrations/*.sql; do \
+		sqlite3 gym.db < $$file; \
+	done
+
 .PHONY: help
 help:
-	@echo "Makefile for Go project"
+	@echo "Makefile for Gym service"
 	@echo ""
 	@echo "Usage:"
 	@echo "  make run        Run the application"
 	@echo "  make build      Build the application"
-	@echo "  make debug      Debug the application using Delve"
+	@echo "  make debug      Debug the application using GDB"
 	@echo "  make clean      Clean the build directory"

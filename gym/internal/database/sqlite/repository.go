@@ -56,7 +56,6 @@ func (r *ExerciseRepository) GetRfId(rfId string) (rfIdFound string, err error) 
 
 	err = r.tx.QueryRow("SELECT rf_id FROM valid_rf_ids WHERE rf_id = ?", rfId).Scan(&rfIdFound)
 	if err != nil {
-		r.tx.Rollback()
 		return "", err
 	}
 	return rfIdFound, nil

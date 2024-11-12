@@ -19,7 +19,7 @@ func main() {
 		config.MqttClientId,
 		config.MqttUsername,
 		config.MqttPassword,
-		config.MqttCleanSession == "false",
+		config.MqttCleanSession == "true",
 	)
 
 	defer mosquittoClient.Disconnect()
