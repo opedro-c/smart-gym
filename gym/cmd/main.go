@@ -3,7 +3,7 @@ package main
 import (
 	"gym/internal/config"
 	"gym/internal/mqtt"
-	"gym/pkg/logger"
+	"log/slog"
 	"os"
 	"os/signal"
 	"syscall"
@@ -11,7 +11,7 @@ import (
 
 func main() {
 
-	logger.Logger().Println("Starting MQTT client")
+	slog.Info("Starting MQTT client")
 
 	var mosquittoClient mqtt.Client = mqtt.NewMosquittoClient(
 		config.MosquittoDomain,
@@ -32,5 +32,5 @@ func main() {
 	signal.Notify(waitForExit, syscall.SIGINT, syscall.SIGTERM)
 	<-waitForExit
 
-	logger.Logger().Println("Exiting MQTT client")
+	slog.Info("Exiting MQTT client")
 }

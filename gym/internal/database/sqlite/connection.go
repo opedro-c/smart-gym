@@ -2,10 +2,11 @@ package sqlite
 
 import (
 	"database/sql"
-	"gym/pkg/logger"
+	"log/slog"
 	"path/filepath"
-	 _ "github.com/mattn/go-sqlite3"
 	"sync"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 var (
@@ -21,11 +22,12 @@ func GetConnection() *sql.DB {
 }
 
 func openConnection() *sql.DB {
-	logger.Logger().Println("Opening database connection")
+	slog.Info("Opening database connection")
 	dbPath := filepath.Join("gym.db")
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
-		logger.Logger().Fatalln("Error while opening database connection", err)
+		slog.Error("Error while opening database connection")
+		panic(err)
 	}
 	return db
 }

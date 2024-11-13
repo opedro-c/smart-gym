@@ -3,7 +3,7 @@ package abstract
 import (
 	"database/sql"
 	"fmt"
-	"gym/pkg/logger"
+	"log/slog"
 	"reflect"
 )
 
@@ -23,9 +23,9 @@ func NewUseCaseTransaction[T any, S any](tx *sql.Tx, useCase UseCase[T, S], inpu
 
 func (a *UseCaseTransaction[T, S]) Execute() (output S, err error) {
 	useCaseType := reflect.TypeOf(a.useCase)
-	fmt.Print("Executing transaction for use case: ", useCaseType)
+	slog.Info(fmt.Sprintf("Executing transaction for use case: %s", useCaseType))
 	if output, err = a.useCase.Execute(a.input); err != nil {
-		logger.Logger().Printf("Error executing use case %s: %s", useCaseType, err.Error())
+		slog.Debug(fmt.Sprintf("Rolling back transaction for use case: %s", useCaseType))
 		a.tx.Rollback()
 		return output, err
 	}

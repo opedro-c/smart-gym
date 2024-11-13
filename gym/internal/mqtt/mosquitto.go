@@ -1,7 +1,8 @@
 package mqtt
 
 import (
-	"gym/pkg/logger"
+	"fmt"
+	"log/slog"
 	"strings"
 
 	MQTT "github.com/eclipse/paho.mqtt.golang"
@@ -35,7 +36,7 @@ func NewMosquittoClient(
 
 	pahoClient := MQTT.NewClient(opts)
 	if token := pahoClient.Connect(); token.Wait() && token.Error() != nil {
-		logger.Logger().Fatal(token.Error())
+		panic(token.Error())
 	}
 
 	return &MosquittoClient{
@@ -50,14 +51,13 @@ func NewMosquittoClient(
 }
 
 func (c *MosquittoClient) Subscribe(topic string, handler func(payload []byte)) error {
-	logger.Logger().Printf("Subscribing to topic: %s\n", topic)
+	slog.Info(fmt.Sprintf("Subscribing to topic: %s\n", topic))
 	mosquittoHandler := func(client MQTT.Client, msg MQTT.Message) {
-		logger.Logger().Printf("\nTopic: %s\nMessage: %s\n", msg.Topic(), msg.Payload())
+		slog.Info(fmt.Sprintf("\nTopic: %s\nMessage: %s\n", msg.Topic(), msg.Payload()))
 		handler(msg.Payload())
 	}
 	if token := c.pahoClient.Subscribe(topic, 2, mosquittoHandler); token.Wait() && token.Error() != nil {
-		logger.Logger().Println(token.Error())
-		return token.Error()
+		panic(token.Error())
 	}
 	return nil
 }

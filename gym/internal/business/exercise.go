@@ -3,7 +3,7 @@ package business
 import (
 	"gym/internal/database"
 	"gym/internal/entities"
-	"gym/pkg/logger"
+	"log/slog"
 )
 
 type SaveExerciseUseCase[T InputSaveExerciseUseCase] struct {
@@ -29,12 +29,11 @@ func (u *SaveExerciseUseCase[T]) Execute(input InputSaveExerciseUseCase) (output
 		return output, err
 	}
 	if rfId == "" {
-		logger.Logger().Printf("RfId %s not found", input.Exercise.UserRfId)
+		slog.Debug("RfId not found", "RfId", input.Exercise.UserRfId)
 		return output, nil
 	}
 
 	if err = u.exerciseRepo.SaveExercise(input.Exercise); err != nil {
-		logger.Logger().Println()
 		return output, err
 	}
 

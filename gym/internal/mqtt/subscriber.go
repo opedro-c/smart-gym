@@ -2,10 +2,11 @@ package mqtt
 
 import (
 	"encoding/json"
+	"fmt"
 	"gym/internal/business"
 	"gym/internal/database/sqlite"
 	"gym/pkg/abstract"
-	"gym/pkg/logger"
+	"log/slog"
 )
 
 // Subscriber routes each incoming message to the appropriate handler
@@ -29,7 +30,7 @@ func (s *Subscriber) Setup() {
 		tx, err := db.Begin()
 
 		if err != nil {
-			logger.Logger().Fatalf("Error starting transaction: %v", err)
+			slog.Error(fmt.Sprintf("Error starting transaction: %v", err))
 		}
 
 		var input business.InputSaveExerciseUseCase
