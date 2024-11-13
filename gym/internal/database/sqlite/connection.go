@@ -31,4 +31,3 @@ func openConnection() *sql.DB {
 	}
 	return db
 }
-
