@@ -2,7 +2,6 @@ package usecases
 
 import (
 	"cloud-gym/internal/core/exercise"
-	"log"
 )
 
 type CreateExercises struct {
@@ -16,8 +15,6 @@ func NewCreateExercises(exerciseRepository exercise.ExerciseRepository) CreateEx
 }
 
 func (c *CreateExercises) Execute(exerciseDatas []exercise.ExerciseRecord) ([]string, error) {
-	log.Println("Creating exercise")
-	log.Println(exerciseDatas)
 	result, err := c.exerciseRepository.CreateExercises(exerciseDatas)
 	if err != nil {
 		return nil, &exercise.CannotCreateExerciseError

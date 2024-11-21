@@ -9,18 +9,20 @@ import (
 )
 
 func CreateExerciseHandler(w http.ResponseWriter, r *http.Request) error {
-	var data []exercise.ExerciseRecord
-	if err := utils.ParseJson(r, &data); err != nil {
+	var input []exercise.ExerciseRecord
+	if err := utils.ParseJson(r, &input); err != nil {
 		return err
 	}
 
-	if err := utils.ValidateJsonStruct(&data); err != nil {
-		return err
+	for _, data := range input {
+		if err := utils.ValidateJsonStruct(&data); err != nil {
+			return err
+		}
 	}
 
 	useCase := usecases.NewCreateExercises(getExerciseRepository())
 
-	result, err := useCase.Execute(data)
+	result, err := useCase.Execute(input)
 	if err != nil {
 		return err
 	}
