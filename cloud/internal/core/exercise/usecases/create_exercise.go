@@ -2,22 +2,25 @@ package usecases
 
 import (
 	"cloud-gym/internal/core/exercise"
+	"log"
 )
 
-type CreateExercise struct {
+type CreateExercises struct {
 	exerciseRepository exercise.ExerciseRepository
 }
 
-func NewCreateExercise(exerciseRepository exercise.ExerciseRepository) CreateExercise {
-	return CreateExercise{
+func NewCreateExercises(exerciseRepository exercise.ExerciseRepository) CreateExercises {
+	return CreateExercises{
 		exerciseRepository: exerciseRepository,
 	}
 }
 
-func (c *CreateExercise) Execute(exerciseData exercise.ExerciseRecord) (string, error) {
-	result, err := c.exerciseRepository.CreateExercise(exerciseData)
+func (c *CreateExercises) Execute(exerciseDatas []exercise.ExerciseRecord) ([]string, error) {
+	log.Println("Creating exercise")
+	log.Println(exerciseDatas)
+	result, err := c.exerciseRepository.CreateExercises(exerciseDatas)
 	if err != nil {
-		return "", &exercise.CannotCreateExerciseError
+		return nil, &exercise.CannotCreateExerciseError
 	}
 	return result, nil
 }

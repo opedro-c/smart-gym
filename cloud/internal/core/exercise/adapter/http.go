@@ -9,7 +9,7 @@ import (
 )
 
 func CreateExerciseHandler(w http.ResponseWriter, r *http.Request) error {
-	var data exercise.ExerciseRecord
+	var data []exercise.ExerciseRecord
 	if err := utils.ParseJson(r, &data); err != nil {
 		return err
 	}
@@ -18,14 +18,14 @@ func CreateExerciseHandler(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	useCase := usecases.NewCreateExercise(getExerciseRepository())
+	useCase := usecases.NewCreateExercises(getExerciseRepository())
 
 	result, err := useCase.Execute(data)
 	if err != nil {
 		return err
 	}
 
-	utils.WriteJSON(w, http.StatusCreated, map[string]string{"id": result})
+	utils.WriteJSON(w, http.StatusCreated, result)
 
 	return nil
 }

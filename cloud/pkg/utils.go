@@ -21,7 +21,7 @@ var validate = validator.New(validator.WithRequiredStructEnabled())
 func ValidateJsonStruct(v interface{}) error {
 	err := validate.Struct(v)
 	if err != nil {
-		return err.(validator.ValidationErrors)
+		return err
 	}
 	return nil
 }

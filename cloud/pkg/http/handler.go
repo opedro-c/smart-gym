@@ -2,6 +2,7 @@ package http
 
 import (
 	util "cloud-gym/pkg"
+	"log"
 	"net/http"
 )
 
@@ -14,6 +15,8 @@ func MakeRouteHandler(handler AppRouteHandler) func(w http.ResponseWriter, r *ht
 		if err == nil {
 			return
 		}
+
+		log.Println(err)
 
 		var httpError HTTPError
 		if error, ok := err.(ToHttpError); ok {

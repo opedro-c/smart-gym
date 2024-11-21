@@ -3,13 +3,14 @@ package exercise
 import (
 	"context"
 
+	m "cloud-gym/internal/mongo"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // Interface
 type ExerciseRepository interface {
-	CreateExercise(exercise ExerciseRecord) (string, error)
+	CreateExercises(exercises []ExerciseRecord) ([]string, error)
 }
 
 // Implementation
@@ -23,11 +24,25 @@ func NewMongoExerciseRepository(client *mongo.Client) ExerciseRepository {
 	}
 }
 
-func (r *MongoExerciseRepository) CreateExercise(exercise ExerciseRecord) (string, error) {
-	coll := r.client.Database("db").Collection("books")
-	result, err := coll.InsertOne(context.TODO(), exercise)
-	if err != nil {
-		return "", err
+func (r *MongoExerciseRepository) CreateExercises(exercises []ExerciseRecord) ([]string, error) {
+	exercisesModels := NewExerciseCollectionRecord(exercises)
+
+	// Convert []ExerciseCollectionRecord to []interface{}
+	documents := make([]interface{}, len(exercisesModels))
+	for i, model := range exercisesModels {
+		documents[i] = model
 	}
-	return result.InsertedID.(primitive.ObjectID).Hex(), nil
+
+	coll := r.client.Database(m.DATABASE_NAME).Collection(m.EXERCISES_COLLECTION_NAME)
+	result, err := coll.InsertMany(context.TODO(), documents)
+	if err != nil {
+		return nil, err
+	}
+
+	objectIds := make([]string, 0, len(result.InsertedIDs))
+	for _, id := range result.InsertedIDs {
+		objectIds = append(objectIds, id.(primitive.ObjectID).Hex())
+	}
+
+	return objectIds, nil
 }

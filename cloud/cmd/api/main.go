@@ -2,12 +2,16 @@ package main
 
 import (
 	"cloud-gym/internal/adapter"
+	"cloud-gym/internal/mongo"
+	"net/http"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"net/http"
 )
 
 func main() {
+	mongo.GetConnection()
+
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 
