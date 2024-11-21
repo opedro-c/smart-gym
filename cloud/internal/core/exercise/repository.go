@@ -2,6 +2,8 @@ package exercise
 
 import (
 	"context"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -28,7 +30,7 @@ func (r *MongoExerciseRepository) CreateExercise(exercise ExerciseRecord) (strin
 	if err != nil {
 		return "", err
 	}
-	return result.InsertedID.(string), nil
+	return result.InsertedID.(primitive.ObjectID).String(), nil
 }
 
 // func (r *MongoExerciseRepository) CreateManyExercises(exercises []ExerciseRecord) ([]string, error) {

@@ -4,20 +4,45 @@ import (
 	"cloud-gym/internal/core/exercise"
 	"cloud-gym/internal/core/exercise/usecases"
 	"cloud-gym/internal/mongo"
-	"cloud-gym/pkg/service"
-	"cloud-gym/pkg/service/user"
+	utils "cloud-gym/pkg"
+	"fmt"
 	"net/http"
 )
 
+// func GetExercisesHandler(w http.ResponseWriter, r *http.Request) error {
+// 	useCase := usecases.NewCreateExercise(getExerciseRepository())
+
+// 	result, err := useCase.Execute(data)
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	return utils.WriteJSON(w, http.StatusCreated, result)
+// }
+
 func CreateExerciseHandler(w http.ResponseWriter, r *http.Request) error {
-	exerciseRepository := exercise.NewMongoExerciseRepository(mongo.GetConnection())
 
-	useCase := usecases.NewCreateExercise(exerciseRepository)
+	if r.Body == nil {
+		fmt.Println("FOIIIII")
+	}
 
-	result, err := useCase.Execute()
+	var data exercise.ExerciseRecord
+	if err := utils.ParseJson(r, &data); err != nil {
+		return err
+	}
+
+	useCase := usecases.NewCreateExercise(getExerciseRepository())
+
+	result, err := useCase.Execute(data)
 	if err != nil {
 		return err
 	}
 
-	return http.WriteJSON(w, result)
+	fmt.Println("result", result)
+
+	return utils.WriteJSON(w, http.StatusCreated, result)
+}
+
+func getExerciseRepository() exercise.ExerciseRepository {
+	return exercise.NewMongoExerciseRepository(mongo.GetConnection())
 }

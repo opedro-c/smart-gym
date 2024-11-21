@@ -4,7 +4,6 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"os"
 	"sync"
 )
 
@@ -15,7 +14,7 @@ var (
 
 func GetConnection() *mongo.Client {
 	once.Do(func() {
-		uri := os.Getenv("MONGODB_URI")
+		uri := "mongodb://gym:gym@localhost:27017"
 		clientConnected, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(uri))
 		if err != nil {
 			panic(err)
