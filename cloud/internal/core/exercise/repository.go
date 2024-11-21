@@ -10,7 +10,6 @@ import (
 // Interface
 type ExerciseRepository interface {
 	CreateExercise(exercise ExerciseRecord) (string, error)
-	// CreateManyExercises(exercises []ExerciseRecord) ([]string, error)
 }
 
 // Implementation
@@ -30,20 +29,5 @@ func (r *MongoExerciseRepository) CreateExercise(exercise ExerciseRecord) (strin
 	if err != nil {
 		return "", err
 	}
-	return result.InsertedID.(primitive.ObjectID).String(), nil
+	return result.InsertedID.(primitive.ObjectID).Hex(), nil
 }
-
-// func (r *MongoExerciseRepository) CreateManyExercises(exercises []ExerciseRecord) ([]string, error) {
-// 	coll := r.client.Database("db").Collection("books")
-// 	result, err := coll.InsertMany(context.TODO(), exercises)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	var ids []string
-// 	for _, id := range result.InsertedIDs {
-// 		ids = append(ids, id.(string))
-// 	}
-
-// 	return ids, nil
-// }
