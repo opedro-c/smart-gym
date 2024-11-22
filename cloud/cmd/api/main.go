@@ -3,6 +3,7 @@ package main
 import (
 	"cloud-gym/internal/adapter"
 	"cloud-gym/internal/mongo"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -21,5 +22,6 @@ func main() {
 
 	r.Mount("/api/v1", adapter.MakeAppRouter())
 
+	log.Println("Server is running on port 3030")
 	http.ListenAndServe(":3030", r)
 }

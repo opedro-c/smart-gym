@@ -15,9 +15,5 @@ func NewCreateExercises(exerciseRepository exercise.ExerciseRepository) CreateEx
 }
 
 func (c *CreateExercises) Execute(exerciseDatas []exercise.ExerciseRecord) ([]string, error) {
-	result, err := c.exerciseRepository.CreateExercises(exerciseDatas)
-	if err != nil {
-		return nil, &exercise.CannotCreateExerciseError
-	}
-	return result, nil
+	return c.exerciseRepository.CreateExercises(exerciseDatas)
 }

@@ -2,8 +2,6 @@ package exercise
 
 import (
 	"context"
-	"encoding/json"
-	"log"
 
 	m "cloud-gym/internal/mongo"
 
@@ -32,13 +30,9 @@ func (r *MongoExerciseRepository) CreateExercises(exercises []ExerciseRecord) ([
 
 	// Convert []ExerciseCollectionRecord to []interface{}
 	documents := make([]interface{}, len(exercisesModels))
-	for i, model := range exercisesModels {
-		documents[i] = model
+	for i := range exercisesModels {
+		documents[i] = exercisesModels[i]
 	}
-
-	log.Println("Creating exercise")
-	a, _ := json.Marshal(documents)
-	log.Println(string(a[:]))
 
 	coll := r.client.Database(m.DATABASE_NAME).Collection(m.EXERCISES_COLLECTION_NAME)
 	result, err := coll.InsertMany(context.TODO(), documents)

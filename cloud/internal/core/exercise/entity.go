@@ -2,6 +2,7 @@ package exercise
 
 import (
 	m "cloud-gym/internal/mongo"
+	"time"
 )
 
 type ExerciseRecord struct {
@@ -11,8 +12,8 @@ type ExerciseRecord struct {
 }
 
 type ExerciseData struct {
-	StartedAt  uint64 `json:"started_at" validate:"required"`
-	FinishedAt uint64 `json:"finished_at" validate:"required"`
+	StartedAt  uint32 `json:"started_at" validate:"required"`
+	FinishedAt uint32 `json:"finished_at" validate:"required"`
 	Weight     uint32 `json:"weight" validate:"required"`
 }
 
@@ -30,10 +31,10 @@ func NewExerciseCollectionRecord(exerciseRecords []ExerciseRecord) []m.ExerciseC
 			result = append(result, m.ExerciseCollectionRecord{
 				UserID:     record.UserID,
 				OriginID:   record.OriginID,
-				StartedAt:  data.StartedAt,
-				FinishedAt: data.FinishedAt,
+				StartedAt:  time.UnixMilli(int64(data.StartedAt)).UTC(),
+				FinishedAt: time.UnixMilli(int64(data.StartedAt)).UTC(),
 				Data: struct {
-					Weight uint32 `json:"weight" validate:"required"`
+					Weight uint32 `json:"weight" bson:"weight" validate:"required"`
 				}{
 					Weight: data.Weight,
 				},
