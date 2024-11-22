@@ -8,6 +8,15 @@ import (
 	"net/http"
 )
 
+// Create Exercises Handler
+//
+//	@Summary		Create a couple of exercises
+//	@Tags			exercises
+//	@Accept			json
+//	@Produce		json
+//	@Param			exercises body []exercise.ExerciseRecord true "Exercises"
+//	@Success		200	{object}	any
+//	@Router			/exercises [post]
 func CreateExerciseHandler(w http.ResponseWriter, r *http.Request) error {
 	var input []exercise.ExerciseRecord
 	if err := utils.ParseJson(r, &input); err != nil {
