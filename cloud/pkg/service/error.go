@@ -1,23 +1,25 @@
 package service
 
-import "cloud-gym/pkg/http"
+import (
+	"cloud-gym/pkg/http"
+)
 
 type ServiceError struct {
-	Code    int
-	Message string
+	Code int
+	Err  error
 }
 
-func (e *ServiceError) Error() string {
-	return e.Message
+func (e ServiceError) Error() string {
+	return e.Err.Error()
 }
 
-func NewServiceError(code int, message string) ServiceError {
+func NewServiceError(code int, err error) ServiceError {
 	return ServiceError{
-		Code:    code,
-		Message: message,
+		Code: code,
+		Err:  err,
 	}
 }
 
-func (e *ServiceError) ToHTTPError() http.HTTPError {
-	return http.NewHTTPError(e.Code, e.Message)
+func (e ServiceError) ToHTTPError() http.HTTPError {
+	return http.NewHTTPError(e.Code, e.Error())
 }

@@ -5,6 +5,7 @@ import (
 	"cloud-gym/internal/core/exercise/usecases"
 	"cloud-gym/internal/mongo"
 	utils "cloud-gym/pkg"
+	s "cloud-gym/pkg/service"
 	"net/http"
 )
 
@@ -20,12 +21,12 @@ import (
 func CreateExerciseHandler(w http.ResponseWriter, r *http.Request) error {
 	var input []exercise.ExerciseRecord
 	if err := utils.ParseJson(r, &input); err != nil {
-		return err
+		return s.NewServiceError(400, err)
 	}
 
 	for _, data := range input {
 		if err := utils.ValidateJsonStruct(&data); err != nil {
-			return err
+			return s.NewServiceError(400, err)
 		}
 	}
 
