@@ -2,15 +2,16 @@ FROM golang:1.23-alpine AS builder
 
 WORKDIR /app
 
-COPY . .
-
 RUN apk add build-base
 
+COPY go.mod go.sum ./
 RUN go mod download
 
-ENV CGO_ENABLED=1
+COPY . .
 
-RUN go build -o main ./cmd/main.go
+RUN go build -o main cmd/api/main.go
+
+ENV CGO_ENABLED=1
 
 FROM alpine:latest
 

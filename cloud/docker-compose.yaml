@@ -18,3 +18,11 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: gym
       ME_CONFIG_MONGODB_URL: mongodb://gym:gym@mongo:27017/
       ME_CONFIG_BASICAUTH: false
+
+  backend:
+    build: .
+    restart: always
+    ports:
+      - 3030:3030
+    environment:
+      MONGODB_URL: mongodb://gym:gym@mongo:27017/smart_gym  
