@@ -1,0 +1,61 @@
+basePath: /api/v1
+consumes:
+- application/json
+definitions:
+  exercise.ExerciseData:
+    properties:
+      finished_at:
+        type: integer
+      started_at:
+        type: integer
+      weight:
+        type: integer
+    required:
+    - finished_at
+    - started_at
+    - weight
+    type: object
+  exercise.ExerciseRecord:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/exercise.ExerciseData'
+        type: array
+      origin_id:
+        type: string
+      user_id:
+        type: string
+    required:
+    - data
+    - origin_id
+    - user_id
+    type: object
+info:
+  contact: {}
+  description: This is the strongest server ever.
+  title: Smart-Gym API
+  version: "1.0"
+paths:
+  /exercises:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Exercises
+        in: body
+        name: exercises
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/exercise.ExerciseRecord'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema: {}
+      summary: Create a couple of exercises
+      tags:
+      - exercises
+swagger: "2.0"

@@ -1,0 +1,92 @@
+{
+    "consumes": [
+        "application/json"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "This is the strongest server ever.",
+        "title": "Smart-Gym API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "basePath": "/api/v1",
+    "paths": {
+        "/exercises": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "exercises"
+                ],
+                "summary": "Create a couple of exercises",
+                "parameters": [
+                    {
+                        "description": "Exercises",
+                        "name": "exercises",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/exercise.ExerciseRecord"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {}
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "exercise.ExerciseData": {
+            "type": "object",
+            "required": [
+                "finished_at",
+                "started_at",
+                "weight"
+            ],
+            "properties": {
+                "finished_at": {
+                    "type": "integer"
+                },
+                "started_at": {
+                    "type": "integer"
+                },
+                "weight": {
+                    "type": "integer"
+                }
+            }
+        },
+        "exercise.ExerciseRecord": {
+            "type": "object",
+            "required": [
+                "data",
+                "origin_id",
+                "user_id"
+            ],
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/exercise.ExerciseData"
+                    }
+                },
+                "origin_id": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
