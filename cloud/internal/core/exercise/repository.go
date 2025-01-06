@@ -3,7 +3,7 @@ package exercise
 import (
 	"context"
 
-	m "cloud-gym/internal/mongo"
+	db "cloud-gym/internal/mongo"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -34,7 +34,7 @@ func (r *MongoExerciseRepository) CreateExercises(exercises []ExerciseRecord) ([
 		documents[i] = exercisesModels[i]
 	}
 
-	coll := r.client.Database(m.DATABASE_NAME).Collection(m.EXERCISES_COLLECTION_NAME)
+	coll := r.client.Database(db.DATABASE_NAME).Collection(db.EXERCISES_COLLECTION_NAME)
 	result, err := coll.InsertMany(context.TODO(), documents)
 	if err != nil {
 		return nil, err
