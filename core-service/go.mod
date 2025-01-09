@@ -6,6 +6,7 @@ require (
 	github.com/go-chi/chi/v5 v5.2.0
 	github.com/go-playground/validator/v10 v10.23.0
 	github.com/jackc/pgx/v5 v5.7.2
+	github.com/lib/pq v1.10.9
 	github.com/pressly/goose/v3 v3.24.1
 )
 

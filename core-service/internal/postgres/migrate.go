@@ -14,7 +14,7 @@ var embedMigrations embed.FS
 
 func main() {
 	var db *sql.DB
-	db, err := sql.Open("pgx", "postgres://gym:gym@localhost:5432/gym")
+	db, err := sql.Open("pgx", "postgres://gym:gym@localhost:5432")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)

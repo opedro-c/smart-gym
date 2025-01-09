@@ -16,6 +16,13 @@ type AdminUser struct {
 	Password  string
 }
 
+type Rfid struct {
+	ID        int32
+	CreatedAt time.Time
+	CardID    string
+	UserID    int32
+}
+
 type User struct {
 	ID        int32
 	CreatedAt time.Time
