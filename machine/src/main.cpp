@@ -1,48 +1,63 @@
-/*
-  Rui Santos & Sara Santos - Random Nerd Tutorials
-  Complete project details at https://RandomNerdTutorials.com/esp32-mfrc522-rfid-reader-arduino/
-  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files.  
-  The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 #include <MFRC522v2.h>
 #include <MFRC522DriverSPI.h>
 #include <MFRC522DriverI2C.h>
 #include <MFRC522DriverPinSimple.h>
 #include <MFRC522Debug.h>
+#include <rfid.hpp>
 
-// Learn more about using SPI/I2C or check the pin assigment for your board: https://github.com/OSSLibraries/Arduino_MFRC522v2#pin-layout
-MFRC522DriverPinSimple ss_pin(5);
 
-MFRC522DriverSPI driver{ss_pin}; // Create SPI driver
-//MFRC522DriverI2C driver{};     // Create I2C driver
-MFRC522 mfrc522{driver};         // Create MFRC522 instance
+void setup()
+{
+  Serial.begin(9600);
+  // while (!Serial); 
+  // MFRC522DriverPinSimple ss_pin(5);
 
-void setup() {
-  Serial.begin(9600);  // Initialize serial communication
-  while (!Serial);       // Do nothing if no serial port is opened (added for Arduinos based on ATMEGA32U4).
+  // MFRC522DriverSPI driver{ss_pin}; 
+  // MFRC522 mfrc522{driver};         
+  // mfrc522.PCD_Init();              
+  // RfidHandler rfidHandler{&mfrc522};
+
+  // while (true)
+  // {
+  //   Serial.println("Reading RFID");
+  //   if (rfidHandler.readSensor())
+  //   {
+  //     Serial.print("Card UID: ");
+  //     for (int i = 0; i < RFID_UID_SIZE; i++)
+  //     {
+  //       Serial.print(rfidHandler.getUid()[i], HEX);
+  //       Serial.print(" ");
+  //     }
+  //     Serial.println();
+  //   }
+  //   delay(1000);
+  // }
   
-  mfrc522.PCD_Init();    // Init MFRC522 board.
-  MFRC522Debug::PCD_DumpVersionToSerial(mfrc522, Serial);	// Show details of PCD - MFRC522 Card Reader details.
-  Serial.println(F("Scan PICC to see UID, SAK, type, and data blocks..."));
+
+  // xTaskCreate([](void *pvParameters) {
+  //   RfidHandler *rfidHandler = (RfidHandler *)pvParameters;
+  //   Serial.println("RFID Task Started");
+  //   while (true)
+  //   {
+  //     Serial.println("Reading RFID");
+  //     if (rfidHandler->readSensor())
+  //     {
+  //       Serial.print("Card UID: ");
+  //       for (int i = 0; i < RFID_UID_SIZE; i++)
+  //       {
+  //         Serial.print(rfidHandler->getUid()[i], HEX);
+  //         Serial.print(" ");
+  //       }
+  //       Serial.println();
+  //     }
+  //     vTaskDelay(1000 / portTICK_PERIOD_MS);
+  //   }
+
+  //   vTaskDelete(NULL);
+  // }, "rfidTask", 4096, &rfidHandler, 1, NULL);
 }
 
-void loop() {
-  // Reset the loop if no new card present on the sensor/reader. This saves the entire process when idle.
-  if (!mfrc522.PICC_IsNewCardPresent()) {
-    return;
-  }
-
-  // Select one of the cards.
-  if (!mfrc522.PICC_ReadCardSerial()) {
-    return;
-  }
-
-  // Dump debug info about the card; PICC_HaltA() is automatically called.
-  Serial.print(F("Card UID:"));
-  for (int i = 0; i < mfrc522.uid.size; i++) {
-    Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? "0" : "");
-    Serial.print(mfrc522.uid.uidByte[i], HEX);
-  }
-  delay(2000);
+void loop()
+{
+  Serial.println("Hello World");
 }
