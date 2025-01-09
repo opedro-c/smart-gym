@@ -5,7 +5,6 @@
 package sqlc
 
 import (
-	"database/sql"
 	"time"
 )
 
@@ -20,7 +19,7 @@ type AdminUser struct {
 type User struct {
 	ID        int32
 	CreatedAt time.Time
-	Enabled   sql.NullBool
+	Enabled   bool
 	Username  string
 	Email     string
 	Password  string

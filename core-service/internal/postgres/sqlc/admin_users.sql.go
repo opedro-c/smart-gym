@@ -37,38 +37,22 @@ func (q *Queries) CreateAdminUser(ctx context.Context, arg CreateAdminUserParams
 	return i, err
 }
 
-const getAdminUserById = `-- name: GetAdminUserById :many
+const getAdminUserById = `-- name: GetAdminUserById :one
 SELECT id, created_at, username, email, password FROM admin_users
 WHERE id = $1 LIMIT 1
 `
 
-func (q *Queries) GetAdminUserById(ctx context.Context, id int32) ([]AdminUser, error) {
-	rows, err := q.db.QueryContext(ctx, getAdminUserById, id)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []AdminUser
-	for rows.Next() {
-		var i AdminUser
-		if err := rows.Scan(
-			&i.ID,
-			&i.CreatedAt,
-			&i.Username,
-			&i.Email,
-			&i.Password,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
+func (q *Queries) GetAdminUserById(ctx context.Context, id int32) (AdminUser, error) {
+	row := q.db.QueryRowContext(ctx, getAdminUserById, id)
+	var i AdminUser
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.Username,
+		&i.Email,
+		&i.Password,
+	)
+	return i, err
 }
 
 const updateAdminUser = `-- name: UpdateAdminUser :exec
@@ -86,5 +70,21 @@ type UpdateAdminUserParams struct {
 
 func (q *Queries) UpdateAdminUser(ctx context.Context, arg UpdateAdminUserParams) error {
 	_, err := q.db.ExecContext(ctx, updateAdminUser, arg.ID, arg.Username, arg.Email)
+	return err
+}
+
+const updateAdminUserPassword = `-- name: UpdateAdminUserPassword :exec
+UPDATE admin_users
+  set password = $2
+WHERE id = $1
+`
+
+type UpdateAdminUserPasswordParams struct {
+	ID       int32
+	Password string
+}
+
+func (q *Queries) UpdateAdminUserPassword(ctx context.Context, arg UpdateAdminUserPasswordParams) error {
+	_, err := q.db.ExecContext(ctx, updateAdminUserPassword, arg.ID, arg.Password)
 	return err
 }

@@ -1,4 +1,4 @@
--- name: GetAdminUserById :many
+-- name: GetAdminUserById :one
 SELECT * FROM admin_users
 WHERE id = $1 LIMIT 1;
 
@@ -14,4 +14,9 @@ RETURNING *;
 UPDATE admin_users
   set username = $2,
   email = $3
+WHERE id = $1;
+
+-- name: UpdateAdminUserPassword :exec
+UPDATE admin_users
+  set password = $2
 WHERE id = $1;

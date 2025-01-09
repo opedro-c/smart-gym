@@ -1,16 +1,16 @@
 package adapter
 
-// import (
-// 	exercise "gym-core-service/internal/core/exercise/adapter"
-// 	u "gym-core-service/pkg/http"
+import (
+	"github.com/go-chi/chi/v5"
+	user "gym-core-service/internal/core/user/adapter"
+	u "gym-core-service/pkg/http"
+)
 
-// 	"github.com/go-chi/chi/v5"
-// )
+func MakeAppRouter() chi.Router {
+	appRouter := chi.NewRouter()
 
-// func MakeAppRouter() chi.Router {
-// 	appRouter := chi.NewRouter()
+	appRouter.Put("/users/{id}", u.MakeRouteHandler(user.UpdateUserHandler))
+	appRouter.Get("/users/{id}", u.MakeRouteHandler(user.GetUserHandler))
 
-// 	appRouter.Post("/exercises", u.MakeRouteHandler(exercise.CreateExerciseHandler))
-
-// 	return appRouter
-// }
+	return appRouter
+}

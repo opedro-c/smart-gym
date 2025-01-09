@@ -7,7 +7,6 @@ package sqlc
 
 import (
 	"context"
-	"database/sql"
 )
 
 const createUser = `-- name: CreateUser :one
@@ -39,62 +38,93 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	return i, err
 }
 
-const getUserById = `-- name: GetUserById :many
+const existsUserByEmail = `-- name: ExistsUserByEmail :one
+SELECT EXISTS(SELECT 1 FROM users WHERE email = $1 LIMIT 1)
+`
+
+func (q *Queries) ExistsUserByEmail(ctx context.Context, email string) (bool, error) {
+	row := q.db.QueryRowContext(ctx, existsUserByEmail, email)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
+}
+
+const existsUserById = `-- name: ExistsUserById :one
+SELECT EXISTS(SELECT 1 FROM users WHERE id = $1 LIMIT 1)
+`
+
+func (q *Queries) ExistsUserById(ctx context.Context, id int32) (bool, error) {
+	row := q.db.QueryRowContext(ctx, existsUserById, id)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
+}
+
+const getUserById = `-- name: GetUserById :one
 SELECT id, created_at, enabled, username, email, password FROM users
 WHERE id = $1 LIMIT 1
 `
 
-func (q *Queries) GetUserById(ctx context.Context, id int32) ([]User, error) {
-	rows, err := q.db.QueryContext(ctx, getUserById, id)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []User
-	for rows.Next() {
-		var i User
-		if err := rows.Scan(
-			&i.ID,
-			&i.CreatedAt,
-			&i.Enabled,
-			&i.Username,
-			&i.Email,
-			&i.Password,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
+func (q *Queries) GetUserById(ctx context.Context, id int32) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserById, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.Enabled,
+		&i.Username,
+		&i.Email,
+		&i.Password,
+	)
+	return i, err
 }
 
-const updateUser = `-- name: UpdateUser :exec
+const setUserActiveStatus = `-- name: SetUserActiveStatus :exec
 UPDATE users
-  set username = $2,
-  email = $3,
-  enabled = $4
+  set enabled = $2
 WHERE id = $1
 `
 
-type UpdateUserParams struct {
+type SetUserActiveStatusParams struct {
+	ID      int32
+	Enabled bool
+}
+
+func (q *Queries) SetUserActiveStatus(ctx context.Context, arg SetUserActiveStatusParams) error {
+	_, err := q.db.ExecContext(ctx, setUserActiveStatus, arg.ID, arg.Enabled)
+	return err
+}
+
+const updateUserData = `-- name: UpdateUserData :exec
+UPDATE users
+  set username = $2,
+  email = $3
+WHERE id = $1
+`
+
+type UpdateUserDataParams struct {
 	ID       int32
 	Username string
 	Email    string
-	Enabled  sql.NullBool
 }
 
-func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
-	_, err := q.db.ExecContext(ctx, updateUser,
-		arg.ID,
-		arg.Username,
-		arg.Email,
-		arg.Enabled,
-	)
+func (q *Queries) UpdateUserData(ctx context.Context, arg UpdateUserDataParams) error {
+	_, err := q.db.ExecContext(ctx, updateUserData, arg.ID, arg.Username, arg.Email)
+	return err
+}
+
+const updateUserPassword = `-- name: UpdateUserPassword :exec
+UPDATE users
+  set password = $2
+WHERE id = $1
+`
+
+type UpdateUserPasswordParams struct {
+	ID       int32
+	Password string
+}
+
+func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error {
+	_, err := q.db.ExecContext(ctx, updateUserPassword, arg.ID, arg.Password)
 	return err
 }
