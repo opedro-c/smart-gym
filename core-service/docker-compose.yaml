@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: gym
+      POSTGRES_PASSWORD: gym 
+      POSTGRES_DB: gym
+    ports:
+      - 5432:5432
+
+  backend:
+    build: .
+    env_file: .env
+    restart: always
+    ports:
+      - 8008:8008
+    environment:
+      MONGODB_URL: mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@mongo:27017
