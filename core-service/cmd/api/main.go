@@ -9,6 +9,10 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	_ "github.com/jackc/pgx/v5/stdlib"
+
+	// swagger
+	"github.com/swaggo/http-swagger"
+	_ "gym-core-service/docs"
 )
 
 // @title Smart-Gym API
@@ -26,7 +30,12 @@ func main() {
 		w.Write([]byte("pong"))
 	})
 
-	r.Mount("/api/v1", adapter.MakeAppRouter())
+	r.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("http://localhost:3030/swagger/doc.json"), //The url pointing to API definition
+	))
+
+	// r.Mount("/api/v1", adapter.MakeAppRouter())
+	r.Mount("/", adapter.MakeAppRouter())
 
 	log.Println("Server is running on port 3030")
 	err := http.ListenAndServe(":3030", r)

@@ -18,7 +18,7 @@ func (u *RfidService) CreateRfid(userID int32, cardID string) (*RfidData, error)
 	return &data, err
 }
 
-func (u *RfidService) FindRfidByUserId(id int32) ([]int32, error) {
+func (u *RfidService) FindRfidByUserId(id int32) ([]RfidData, error) {
 	return u.repository.FindRfidByUserId(u.ctx, id)
 }
 

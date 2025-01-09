@@ -26,7 +26,6 @@ func rfidService(ctx context.Context) *rfid.RfidService {
 // @Router			/users/{id} [get]
 // @Success			200	{object}	any
 // @Param			id   path      int  true  "Account ID"
-// @Param			userData body user.UserData true "User Data"
 // @Accept			json
 // @Produce		json
 func GetUserHandler(w http.ResponseWriter, r *http.Request) error {

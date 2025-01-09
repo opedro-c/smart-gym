@@ -7,7 +7,7 @@ import (
 
 type RfidRepository interface {
 	CreateRfid(ctx context.Context, userID int32, cardID string) (RfidData, error)
-	FindRfidByUserId(ctx context.Context, id int32) ([]int32, error)
+	FindRfidByUserId(ctx context.Context, id int32) ([]RfidData, error)
 	DeleteRfidsByIds(ctx context.Context, ids []int32, userId int32) error
 }
 
@@ -30,18 +30,18 @@ func (r *SqlcRfidRepository) CreateRfid(ctx context.Context, userID int32, cardI
 	return FromRfidModel(model), err
 }
 
-func (r *SqlcRfidRepository) FindRfidByUserId(ctx context.Context, id int32) ([]int32, error) {
+func (r *SqlcRfidRepository) FindRfidByUserId(ctx context.Context, id int32) ([]RfidData, error) {
 	rfids, err := r.db.GetRfidsByUserId(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 
-	ids := make([]int32, len(rfids))
+	rfidDatas := make([]RfidData, len(rfids))
 	for i, rfid := range rfids {
-		ids[i] = rfid.ID
+		rfidDatas[i] = FromRfidModel(rfid)
 	}
 
-	return ids, nil
+	return rfidDatas, nil
 }
 
 func (r *SqlcRfidRepository) DeleteRfidsByIds(ctx context.Context, ids []int32, userId int32) error {
