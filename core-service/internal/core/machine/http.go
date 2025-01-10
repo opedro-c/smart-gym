@@ -19,7 +19,7 @@ func machineService(ctx context.Context) *MachineService {
 // @Router			/machines/ [get]
 // @Success			200	{object}	any
 // @Accept			json
-// @Produce		json
+// @Produce			json
 func GetMachines(w http.ResponseWriter, r *http.Request) error {
 	machines, err := machineService(r.Context()).GetMachines()
 	if err != nil {
@@ -30,6 +30,10 @@ func GetMachines(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
+// @Router			/machines/ [get]
+// @Success			200	{object}	any
+// @Accept			json
+// @Produce			json
 func CreateMachine(w http.ResponseWriter, r *http.Request) error {
 	var input MachineData
 	if err := utils.ParseJson(r, &input); err != nil {
@@ -49,6 +53,10 @@ func CreateMachine(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
+// @Router			/machines/{id} [get]
+// @Success			200	{object}	any
+// @Accept			json
+// @Produce			json
 func DeleteMachine(w http.ResponseWriter, r *http.Request) error {
 	machineId, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
@@ -64,6 +72,10 @@ func DeleteMachine(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
+// @Router			/machines/{id} [get]
+// @Success			200	{object}	any
+// @Accept			json
+// @Produce			json
 func UpdateMachine(w http.ResponseWriter, r *http.Request) error {
 	machineId, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {

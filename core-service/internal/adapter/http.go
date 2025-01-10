@@ -2,6 +2,7 @@ package adapter
 
 import (
 	"gym-core-service/internal/core/machine"
+	"gym-core-service/internal/core/rfid"
 	user "gym-core-service/internal/core/user"
 	u "gym-core-service/pkg/http"
 
@@ -17,6 +18,8 @@ func MakeAppRouter() chi.Router {
 	appRouter.Get("/users/{id}/rfids", u.MakeRouteHandler(user.GetUserRfidsHandler))
 	appRouter.Post("/users/{id}/rfids", u.MakeRouteHandler(user.CreateUserRfidsHandler))
 	appRouter.Delete("/users/{id}/rfids", u.MakeRouteHandler(user.DeleteRfidsUserHandler))
+
+	appRouter.Get("/rfids/{id}/user", u.MakeRouteHandler(rfid.GetUserIdOfRfidHandler))
 
 	appRouter.Get("/machines", u.MakeRouteHandler(machine.GetMachines))
 	appRouter.Post("/machines", u.MakeRouteHandler(machine.CreateMachine))

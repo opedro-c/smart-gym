@@ -85,3 +85,16 @@ func (q *Queries) GetRfidsByUserId(ctx context.Context, userID int32) ([]Rfid, e
 	}
 	return items, nil
 }
+
+const getUserIdByRfidId = `-- name: GetUserIdByRfidId :one
+SELECT user_id
+FROM rfids
+WHERE id = $1
+`
+
+func (q *Queries) GetUserIdByRfidId(ctx context.Context, id int32) (int32, error) {
+	row := q.db.QueryRowContext(ctx, getUserIdByRfidId, id)
+	var user_id int32
+	err := row.Scan(&user_id)
+	return user_id, err
+}

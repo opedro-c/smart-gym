@@ -22,6 +22,10 @@ func (u *RfidService) FindRfidByUserId(id int32) ([]RfidData, error) {
 	return u.repository.FindRfidByUserId(u.ctx, id)
 }
 
+func (u *RfidService) GetUserIdOfRfid(rfidId int32) (int32, error) {
+	return u.repository.GetUserIdOfRfid(u.ctx, rfidId)
+}
+
 func (u *RfidService) DeleteRfidsByIds(ids []int32, userId int32) error {
 	return u.repository.DeleteRfidsByIds(u.ctx, ids, userId)
 }
