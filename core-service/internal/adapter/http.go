@@ -1,9 +1,11 @@
 package adapter
 
 import (
-	"github.com/go-chi/chi/v5"
+	"gym-core-service/internal/core/machine"
 	user "gym-core-service/internal/core/user"
 	u "gym-core-service/pkg/http"
+
+	"github.com/go-chi/chi/v5"
 )
 
 func MakeAppRouter() chi.Router {
@@ -15,6 +17,11 @@ func MakeAppRouter() chi.Router {
 	appRouter.Get("/users/{id}/rfids", u.MakeRouteHandler(user.GetUserRfidsHandler))
 	appRouter.Post("/users/{id}/rfids", u.MakeRouteHandler(user.CreateUserRfidsHandler))
 	appRouter.Delete("/users/{id}/rfids", u.MakeRouteHandler(user.DeleteRfidsUserHandler))
+
+	appRouter.Get("/machines", u.MakeRouteHandler(machine.GetMachines))
+	appRouter.Post("/machines", u.MakeRouteHandler(machine.CreateMachine))
+	appRouter.Put("/machines/{id}", u.MakeRouteHandler(machine.UpdateMachine))
+	appRouter.Delete("/machines/{id}", u.MakeRouteHandler(machine.UpdateMachine))
 
 	return appRouter
 }
