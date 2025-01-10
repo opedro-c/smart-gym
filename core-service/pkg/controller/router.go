@@ -1,4 +1,4 @@
-package http
+package controller
 
 import (
 	util "gym-core-service/pkg"

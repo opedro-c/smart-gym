@@ -6,6 +6,7 @@ import (
 	"gym-core-service/internal/core/rfid"
 	"gym-core-service/internal/postgres/connection"
 	utils "gym-core-service/pkg"
+	"gym-core-service/pkg/controller"
 	s "gym-core-service/pkg/service"
 	"net/http"
 	"strconv"
@@ -57,13 +58,16 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	var input UserData
-	if err := utils.ParseJson(r, &input); err != nil {
-		return s.NewServiceError(400, err)
+	if err := controller.ParseAndValidateBody(r, &input); err != nil {
+		return err
 	}
+	// if err := utils.ParseJson(r, &input); err != nil {
+	// 	return s.NewServiceError(400, err)
+	// }
 
-	if err := utils.ValidateJsonStruct(&input); err != nil {
-		return s.NewServiceError(400, err)
-	}
+	// if err := utils.ValidateJsonStruct(&input); err != nil {
+	// 	return s.NewServiceError(400, err)
+	// }
 
 	// Execute service
 	if err := userService(r.Context()).UpdateUserData(int32(userId), input); err != nil {

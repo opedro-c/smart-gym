@@ -4,7 +4,7 @@ import (
 	"gym-core-service/internal/core/machine"
 	"gym-core-service/internal/core/rfid"
 	user "gym-core-service/internal/core/user"
-	u "gym-core-service/pkg/http"
+	u "gym-core-service/pkg/controller"
 
 	"github.com/go-chi/chi/v5"
 )
