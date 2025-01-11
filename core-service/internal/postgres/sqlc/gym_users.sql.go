@@ -15,7 +15,7 @@ INSERT INTO users (
 ) VALUES (
   $1, $2, $3
 )
-RETURNING id, created_at, enabled, username, email, password
+RETURNING id, created_at, username, email, password, rfid
 `
 
 type CreateUserParams struct {
@@ -30,10 +30,10 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	err := row.Scan(
 		&i.ID,
 		&i.CreatedAt,
-		&i.Enabled,
 		&i.Username,
 		&i.Email,
 		&i.Password,
+		&i.Rfid,
 	)
 	return i, err
 }
@@ -60,8 +60,42 @@ func (q *Queries) ExistsUserById(ctx context.Context, id int32) (bool, error) {
 	return exists, err
 }
 
+const getAllUsers = `-- name: GetAllUsers :many
+SELECT id, created_at, username, email, password, rfid FROM users
+`
+
+func (q *Queries) GetAllUsers(ctx context.Context) ([]User, error) {
+	rows, err := q.db.QueryContext(ctx, getAllUsers)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []User
+	for rows.Next() {
+		var i User
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedAt,
+			&i.Username,
+			&i.Email,
+			&i.Password,
+			&i.Rfid,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getUserById = `-- name: GetUserById :one
-SELECT id, created_at, enabled, username, email, password FROM users
+SELECT id, created_at, username, email, password, rfid FROM users
 WHERE id = $1 LIMIT 1
 `
 
@@ -71,28 +105,12 @@ func (q *Queries) GetUserById(ctx context.Context, id int32) (User, error) {
 	err := row.Scan(
 		&i.ID,
 		&i.CreatedAt,
-		&i.Enabled,
 		&i.Username,
 		&i.Email,
 		&i.Password,
+		&i.Rfid,
 	)
 	return i, err
-}
-
-const setUserActiveStatus = `-- name: SetUserActiveStatus :exec
-UPDATE users
-  set enabled = $2
-WHERE id = $1
-`
-
-type SetUserActiveStatusParams struct {
-	ID      int32
-	Enabled bool
-}
-
-func (q *Queries) SetUserActiveStatus(ctx context.Context, arg SetUserActiveStatusParams) error {
-	_, err := q.db.ExecContext(ctx, setUserActiveStatus, arg.ID, arg.Enabled)
-	return err
 }
 
 const updateUserData = `-- name: UpdateUserData :exec

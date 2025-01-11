@@ -2,6 +2,7 @@ package controller
 
 import (
 	util "gym-core-service/pkg"
+	http_error "gym-core-service/pkg/error/http_error"
 	"log"
 	"net/http"
 )
@@ -18,11 +19,11 @@ func MakeRouteHandler(handler AppRouteHandler) func(w http.ResponseWriter, r *ht
 
 		log.Println(err)
 
-		var httpError HTTPError
-		if error, ok := err.(ToHttpError); ok {
+		var httpError http_error.HTTPError
+		if error, ok := err.(http_error.ToHttpError); ok {
 			httpError = error.ToHTTPError()
 		} else {
-			httpError = NewHTTPError(http.StatusInternalServerError, err.Error())
+			httpError = http_error.NewHTTPError(http.StatusInternalServerError, err.Error())
 		}
 
 		util.WriteJSON(w, httpError.Code, httpError)

@@ -25,6 +25,9 @@ func main() {
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
+	// r.Use(middleware.RedirectSlashes)
+	r.Use(middleware.StripSlashes)
+	r.Use(middleware.Recoverer)
 
 	r.Get("/ping", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("pong"))

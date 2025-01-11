@@ -1,7 +1,34 @@
 definitions:
+  auth.Credentials:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  machine.MachineData:
+    properties:
+      name:
+        maxLength: 32
+        minLength: 3
+        type: string
+      origin_id:
+        minLength: 3
+        type: string
+    required:
+    - name
+    - origin_id
+    type: object
   user.UserData:
     properties:
       email:
+        type: string
+      password:
+        maxLength: 32
+        minLength: 3
         type: string
       username:
         maxLength: 32
@@ -9,57 +36,82 @@ definitions:
         type: string
     required:
     - email
+    - password
     - username
     type: object
 info:
   contact: {}
 paths:
-  /machines/:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema: {}
-  /machines/{id}:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema: {}
-  /rfids/{id}/user:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema: {}
-  /users/{id}:
-    get:
+  /admin/machines/:
+    post:
       consumes:
       - application/json
       parameters:
-      - description: Account ID
-        in: path
-        name: id
+      - description: Machine Data
+        in: body
+        name: machineData
         required: true
-        type: integer
+        schema:
+          $ref: '#/definitions/machine.MachineData'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema: {}
+  /admin/machines/{id}:
+    delete:
+      consumes:
+      - application/json
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema: {}
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Machine Data
+        in: body
+        name: machineData
+        required: true
+        schema:
+          $ref: '#/definitions/machine.MachineData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema: {}
+  /admin/users/:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema: {}
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User Data
+        in: body
+        name: userData
+        required: true
+        schema:
+          $ref: '#/definitions/user.UserData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema: {}
+  /admin/users/{id}:
     put:
       consumes:
       - application/json
@@ -81,8 +133,8 @@ paths:
         "200":
           description: OK
           schema: {}
-  /users/{id}/rfids:
-    delete:
+  /admin/users/{id}/rfids/{rfid}:
+    put:
       consumes:
       - application/json
       parameters:
@@ -91,20 +143,62 @@ paths:
         name: id
         required: true
         type: integer
-      - description: Rfid IDS
-        in: body
-        name: rfidsIds
+      - description: RFID
+        in: path
+        name: rfid
         required: true
-        schema:
-          items:
-            type: integer
-          type: array
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema: {}
+  /auth/admin/login/:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/auth.Credentials'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema: {}
+  /auth/login/:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/auth.Credentials'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema: {}
+  /machines/:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema: {}
+  /rfids/{id}/user:
     get:
       consumes:
       - application/json
@@ -113,14 +207,15 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema: {}
-    post:
+  /users/{id}:
+    get:
       consumes:
       - application/json
       parameters:

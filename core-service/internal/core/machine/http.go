@@ -6,7 +6,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"gym-core-service/internal/postgres/connection"
 	utils "gym-core-service/pkg"
-	s "gym-core-service/pkg/service"
+	s "gym-core-service/pkg/error/service_error"
 	"net/http"
 	"strconv"
 )
@@ -30,8 +30,9 @@ func GetMachines(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-// @Router			/machines/ [get]
-// @Success			200	{object}	any
+// @Router			/admin/machines/ [post]
+// @Success			201	{object}	any
+// @Param			machineData body machine.MachineData true "Machine Data"
 // @Accept			json
 // @Produce			json
 func CreateMachine(w http.ResponseWriter, r *http.Request) error {
@@ -49,11 +50,11 @@ func CreateMachine(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	utils.WriteJSON(w, http.StatusAccepted, machine)
+	utils.WriteJSON(w, http.StatusCreated, machine)
 	return nil
 }
 
-// @Router			/machines/{id} [get]
+// @Router			/admin/machines/{id} [delete]
 // @Success			200	{object}	any
 // @Accept			json
 // @Produce			json
@@ -68,12 +69,13 @@ func DeleteMachine(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	utils.WriteJSON(w, http.StatusAccepted, nil)
+	utils.WriteJSON(w, http.StatusNoContent, nil)
 	return nil
 }
 
-// @Router			/machines/{id} [get]
+// @Router			/admin/machines/{id} [put]
 // @Success			200	{object}	any
+// @Param			machineData body machine.MachineData true "Machine Data"
 // @Accept			json
 // @Produce			json
 func UpdateMachine(w http.ResponseWriter, r *http.Request) error {
@@ -96,6 +98,6 @@ func UpdateMachine(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	utils.WriteJSON(w, http.StatusAccepted, machine)
+	utils.WriteJSON(w, http.StatusOK, machine)
 	return nil
 }

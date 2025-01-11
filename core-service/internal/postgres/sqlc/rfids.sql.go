@@ -7,94 +7,33 @@ package sqlc
 
 import (
 	"context"
-
-	"github.com/lib/pq"
 )
-
-const createRfid = `-- name: CreateRfid :one
-INSERT INTO rfids (
-    user_id, card_id
-) VALUES (
-    $1, $2
-)
-RETURNING id, created_at, card_id, user_id
-`
-
-type CreateRfidParams struct {
-	UserID int32
-	CardID string
-}
-
-func (q *Queries) CreateRfid(ctx context.Context, arg CreateRfidParams) (Rfid, error) {
-	row := q.db.QueryRowContext(ctx, createRfid, arg.UserID, arg.CardID)
-	var i Rfid
-	err := row.Scan(
-		&i.ID,
-		&i.CreatedAt,
-		&i.CardID,
-		&i.UserID,
-	)
-	return i, err
-}
-
-const deleteRfids = `-- name: DeleteRfids :exec
-DELETE FROM rfids
-WHERE id = ANY($1::int[]) AND user_id = $2
-`
-
-type DeleteRfidsParams struct {
-	Column1 []int32
-	UserID  int32
-}
-
-func (q *Queries) DeleteRfids(ctx context.Context, arg DeleteRfidsParams) error {
-	_, err := q.db.ExecContext(ctx, deleteRfids, pq.Array(arg.Column1), arg.UserID)
-	return err
-}
-
-const getRfidsByUserId = `-- name: GetRfidsByUserId :many
-SELECT id, created_at, card_id, user_id
-FROM rfids
-WHERE user_id = $1
-`
-
-func (q *Queries) GetRfidsByUserId(ctx context.Context, userID int32) ([]Rfid, error) {
-	rows, err := q.db.QueryContext(ctx, getRfidsByUserId, userID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Rfid
-	for rows.Next() {
-		var i Rfid
-		if err := rows.Scan(
-			&i.ID,
-			&i.CreatedAt,
-			&i.CardID,
-			&i.UserID,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
 
 const getUserIdByRfidId = `-- name: GetUserIdByRfidId :one
-SELECT user_id
-FROM rfids
+SELECT id
+FROM users
+WHERE rfid = $1
+`
+
+func (q *Queries) GetUserIdByRfidId(ctx context.Context, rfid string) (int32, error) {
+	row := q.db.QueryRowContext(ctx, getUserIdByRfidId, rfid)
+	var id int32
+	err := row.Scan(&id)
+	return id, err
+}
+
+const updateUserRfid = `-- name: UpdateUserRfid :exec
+UPDATE users
+  set rfid = $2
 WHERE id = $1
 `
 
-func (q *Queries) GetUserIdByRfidId(ctx context.Context, id int32) (int32, error) {
-	row := q.db.QueryRowContext(ctx, getUserIdByRfidId, id)
-	var user_id int32
-	err := row.Scan(&user_id)
-	return user_id, err
+type UpdateUserRfidParams struct {
+	ID   int32
+	Rfid string
+}
+
+func (q *Queries) UpdateUserRfid(ctx context.Context, arg UpdateUserRfidParams) error {
+	_, err := q.db.ExecContext(ctx, updateUserRfid, arg.ID, arg.Rfid)
+	return err
 }

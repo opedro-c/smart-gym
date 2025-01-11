@@ -1,4 +1,4 @@
-package controller
+package http
 
 var (
 	EmptyBodyError   = NewHTTPError(400, "empty body")

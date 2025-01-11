@@ -1,7 +1,7 @@
 package service
 
 import (
-	"gym-core-service/pkg/controller"
+	"gym-core-service/pkg/error/http_error"
 )
 
 type ServiceError struct {
@@ -20,6 +20,6 @@ func NewServiceError(code int, err error) ServiceError {
 	}
 }
 
-func (e ServiceError) ToHTTPError() controller.HTTPError {
-	return controller.NewHTTPError(e.Code, e.Error())
+func (e ServiceError) ToHTTPError() http.HTTPError {
+	return http.NewHTTPError(e.Code, e.Error())
 }

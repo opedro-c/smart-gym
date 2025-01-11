@@ -3,11 +3,10 @@ package user
 import (
 	"context"
 	"errors"
-	"gym-core-service/internal/core/rfid"
 	"gym-core-service/internal/postgres/connection"
 	utils "gym-core-service/pkg"
 	"gym-core-service/pkg/controller"
-	s "gym-core-service/pkg/service"
+	s "gym-core-service/pkg/error/service_error"
 	"net/http"
 	"strconv"
 
@@ -17,11 +16,6 @@ import (
 func userService(ctx context.Context) *UserService {
 	repository := NewSqlcUserRepository(connection.GetConnection())
 	return NewUserService(ctx, repository)
-}
-
-func rfidService(ctx context.Context) *rfid.RfidService {
-	repository := rfid.NewSqlcRfidRepository(connection.GetConnection())
-	return rfid.NewRfidService(ctx, repository)
 }
 
 // @Router			/users/{id} [get]
@@ -45,7 +39,42 @@ func GetUserHandler(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-// @Router			/users/{id} [put]
+// @Router			/admin/users/ [get]
+// @Success			200	{object}	any
+// @Accept			json
+// @Produce		json
+func GetAllUserHandler(w http.ResponseWriter, r *http.Request) error {
+	user, err := userService(r.Context()).GetAllUsers()
+	if err != nil {
+		return err
+	}
+
+	utils.WriteJSON(w, http.StatusOK, user)
+
+	return nil
+}
+
+// @Router			/admin/users/ [post]
+// @Success			200	{object}	any
+// @Param			userData body user.UserData true "User Data"
+// @Accept			json
+// @Produce		json
+func CreateUserHandler(w http.ResponseWriter, r *http.Request) error {
+	var input UserData
+	if err := controller.ParseAndValidateBody(r, &input); err != nil {
+		return err
+	}
+
+	user, err := userService(r.Context()).CreateUser(input)
+	if err != nil {
+		return err
+	}
+
+	utils.WriteJSON(w, http.StatusCreated, user)
+	return nil
+}
+
+// @Router			/admin/users/{id} [put]
 // @Success		200	{object}	any
 // @Param			id   path      int  true  "Account ID"
 // @Param			userData body user.UserData true "User Data"
@@ -61,15 +90,7 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) error {
 	if err := controller.ParseAndValidateBody(r, &input); err != nil {
 		return err
 	}
-	// if err := utils.ParseJson(r, &input); err != nil {
-	// 	return s.NewServiceError(400, err)
-	// }
 
-	// if err := utils.ValidateJsonStruct(&input); err != nil {
-	// 	return s.NewServiceError(400, err)
-	// }
-
-	// Execute service
 	if err := userService(r.Context()).UpdateUserData(int32(userId), input); err != nil {
 		return err
 	}
@@ -79,91 +100,50 @@ func UpdateUserHandler(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-// @Router			/users/{id}/rfids [get]
+// @Router			/admin/users/{id}/rfids/{rfid} [put]
 // @Success			200	{object}	any
 // @Param			id   path      int  true  "Account ID"
+// @Param			rfid   path      string  true  "RFID"
 // @Accept			json
-// @Produce		json
-func GetUserRfidsHandler(w http.ResponseWriter, r *http.Request) error {
+// @Produce			json
+func UpdateUserRfidsHandler(w http.ResponseWriter, r *http.Request) error {
 	userId, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
 		return s.NewServiceError(400, errors.New("user id invalid"))
 	}
 
-	_, err = userService(r.Context()).GetUserById(int32(userId))
+	rfid := chi.URLParam(r, "rfid")
+	if rfid == "" {
+		return s.NewServiceError(400, errors.New("rfid id invalid"))
+	}
+
+	err = userService(r.Context()).UpdateUserRfid(int32(userId), rfid)
 	if err != nil {
 		return err
 	}
 
-	rfids, err := rfidService(r.Context()).FindRfidByUserId(int32(userId))
-	if err != nil {
-		return err
-	}
-
-	utils.WriteJSON(w, http.StatusOK, rfids)
+	utils.WriteJSON(w, http.StatusNoContent, nil)
 
 	return nil
 }
 
-// @Router			/users/{id}/rfids [post]
+// @Router			/rfids/{id}/user [get]
 // @Success			200	{object}	any
-// @Param			id   path      int  true  "Account ID"
+// @Param			id   path      string  true  "Account ID"
 // @Accept			json
-// @Produce		json
-func CreateUserRfidsHandler(w http.ResponseWriter, r *http.Request) error {
-	userId, err := strconv.Atoi(chi.URLParam(r, "id"))
-	if err != nil {
-		return s.NewServiceError(400, errors.New("user id invalid"))
+// @Produce			json
+func GetUserIdOfRfidHandler(w http.ResponseWriter, r *http.Request) error {
+	rfid := chi.URLParam(r, "id")
+	if rfid == "" {
+		return s.NewServiceError(400, errors.New("rfid id invalid"))
 	}
 
-	_, err = userService(r.Context()).GetUserById(int32(userId))
-	if err != nil {
-		return err
-	}
-
-	cardId := r.URL.Query().Get("card_id")
-	if cardId == "" {
-		return s.NewServiceError(400, errors.New("card_id is required"))
-	}
-
-	createdData, err := rfidService(r.Context()).CreateRfid(int32(userId), cardId)
+	userId, err := userService(r.Context()).GetUserIdByRfid(rfid)
 	if err != nil {
 		return err
 	}
 
-	utils.WriteJSON(w, http.StatusAccepted, createdData)
-
-	return nil
-}
-
-// @Router			/users/{id}/rfids [delete]
-// @Success			200	{object}	any
-// @Param			id   path      int  true  "Account ID"
-// @Param			rfidsIds body []int32 true "Rfid IDS"
-// @Accept			json
-// @Produce		json
-func DeleteRfidsUserHandler(w http.ResponseWriter, r *http.Request) error {
-	userId, err := strconv.Atoi(chi.URLParam(r, "id"))
-	if err != nil {
-		return s.NewServiceError(400, errors.New("user id invalid"))
-	}
-
-	_, err = userService(r.Context()).GetUserById(int32(userId))
-	if err != nil {
-		return err
-	}
-
-	var input []int32
-	if err := utils.ParseJson(r, &input); err != nil {
-		return s.NewServiceError(400, err)
-	}
-
-	err = rfidService(r.Context()).DeleteRfidsByIds(input, int32(userId))
-	if err != nil {
-		return err
-	}
-
-	utils.WriteJSON(w, http.StatusAccepted, nil)
+	utils.WriteJSON(w, http.StatusOK, userId)
 
 	return nil
 }

@@ -2,7 +2,7 @@ package user
 
 import (
 	"errors"
-	s "gym-core-service/pkg/service"
+	s "gym-core-service/pkg/error/service_error"
 )
 
 var (

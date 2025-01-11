@@ -23,18 +23,11 @@ type Machine struct {
 	OriginID  string
 }
 
-type Rfid struct {
-	ID        int32
-	CreatedAt time.Time
-	CardID    string
-	UserID    int32
-}
-
 type User struct {
 	ID        int32
 	CreatedAt time.Time
-	Enabled   bool
 	Username  string
 	Email     string
 	Password  string
+	Rfid      string
 }

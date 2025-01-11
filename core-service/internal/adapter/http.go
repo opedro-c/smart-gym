@@ -1,8 +1,8 @@
 package adapter
 
 import (
+	"gym-core-service/internal/core/auth"
 	"gym-core-service/internal/core/machine"
-	"gym-core-service/internal/core/rfid"
 	user "gym-core-service/internal/core/user"
 	u "gym-core-service/pkg/controller"
 
@@ -12,19 +12,26 @@ import (
 func MakeAppRouter() chi.Router {
 	appRouter := chi.NewRouter()
 
-	appRouter.Put("/users/{id}", u.MakeRouteHandler(user.UpdateUserHandler))
+	// Public for Esp
+	appRouter.Get("/rfids/{id}/user", u.MakeRouteHandler(user.GetUserIdOfRfidHandler))
+
+	// For users
 	appRouter.Get("/users/{id}", u.MakeRouteHandler(user.GetUserHandler))
-
-	appRouter.Get("/users/{id}/rfids", u.MakeRouteHandler(user.GetUserRfidsHandler))
-	appRouter.Post("/users/{id}/rfids", u.MakeRouteHandler(user.CreateUserRfidsHandler))
-	appRouter.Delete("/users/{id}/rfids", u.MakeRouteHandler(user.DeleteRfidsUserHandler))
-
-	appRouter.Get("/rfids/{id}/user", u.MakeRouteHandler(rfid.GetUserIdOfRfidHandler))
-
 	appRouter.Get("/machines", u.MakeRouteHandler(machine.GetMachines))
-	appRouter.Post("/machines", u.MakeRouteHandler(machine.CreateMachine))
-	appRouter.Put("/machines/{id}", u.MakeRouteHandler(machine.UpdateMachine))
-	appRouter.Delete("/machines/{id}", u.MakeRouteHandler(machine.UpdateMachine))
+	appRouter.Post("/auth/login", u.MakeRouteHandler(auth.LoginHandler))
+
+	// For admin
+	appRouter.Route("/admin", func(r chi.Router) {
+		r.Post("/auth/login", u.MakeRouteHandler(auth.LoginAdminHandler))
+		r.Get("/users", u.MakeRouteHandler(user.GetAllUserHandler))
+		r.Post("/users", u.MakeRouteHandler(user.CreateUserHandler))
+		r.Put("/users/{id}", u.MakeRouteHandler(user.UpdateUserHandler))
+		r.Put("/users/{id}/rfids/{rfid}", u.MakeRouteHandler(user.UpdateUserRfidsHandler))
+
+		r.Post("/machines/", u.MakeRouteHandler(machine.CreateMachine))
+		r.Put("/machines/{id}", u.MakeRouteHandler(machine.UpdateMachine))
+		r.Delete("/machines/{id}", u.MakeRouteHandler(machine.DeleteMachine))
+	})
 
 	return appRouter
 }

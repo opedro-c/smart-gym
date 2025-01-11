@@ -2,8 +2,9 @@ package pkg
 
 import (
 	"encoding/json"
-	"github.com/go-playground/validator/v10"
 	"net/http"
+
+	"github.com/go-playground/validator/v10"
 )
 
 func ParseJson(r *http.Request, v interface{}) error {
