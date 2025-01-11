@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import DefaultUserIcon from '@/assets/DefaultUserIcon.jpg'
+import ToggleDarkMode from '@/components/ToggleDarkMode.vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
@@ -29,14 +30,14 @@ const STYLE_HOVER_MARK_LINE_EFFECT = "relative after:content-[''] after:absolute
 </script>
 <template>
   <nav
-    class="sticky backdrop-blur-sm z-20 flex items-center justify-center space-x-5 p-5 border-b border-white/10"
+    class="sticky backdrop-blur-sm z-20 flex items-center justify-center space-x-5 p-5 border-b border-foreground/10"
   >
-    <ul class="flex items-center md:gap-4 gap-8 text-white/70 ">
+    <ul class="flex items-center md:gap-4 gap-8 text-foreground/70 ">
       <li 
         :key="option.title" v-for="option in activeOptions"
         :class="{
           [STYLE_HOVER_MARK_LINE_EFFECT]: true,
-          'text-white after:w-full': option.link === router.currentRoute.value.path
+          'text-foreground after:w-full': option.link === router.currentRoute.value.path
         }"
       >
         <RouterLink :to="option.link">
@@ -44,9 +45,13 @@ const STYLE_HOVER_MARK_LINE_EFFECT = "relative after:content-[''] after:absolute
         </RouterLink>
       </li>
     </ul>
-    <p :class="{
-      [STYLE_HOVER_MARK_LINE_EFFECT]: true,
-      '!absolute right-5 hover:cursor-pointer': true
-    }">Logout</p>
+
+    <div class="!absolute right-5 flex gap-5 items-center">
+      <ToggleDarkMode />
+      <p :class="{
+        [STYLE_HOVER_MARK_LINE_EFFECT]: true,
+        'hover:cursor-pointer': true
+      }">Logout</p>
+      </div>
   </nav>
 </template>

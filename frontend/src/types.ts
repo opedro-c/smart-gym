@@ -1,9 +1,10 @@
 
 export type Userdata = {
-    name: string,
-    email: string
     id: number
     admin: boolean
+    name: string,
+    email: string
+    password: string
     rfid: string
 }
 

@@ -14,11 +14,11 @@ import { ref } from 'vue';
 
 
 const users = ref([
-    { admin: false, name: 'Joao', email: 'joao@gmail.com', id: 2, rfid: 'A0B8CCDF' },
-    { admin: false, name: 'Claudia', email: 'claudia@gmail.com', id: 3, rfid: 'C4A5B6D7' },
-    { admin: false, name: 'Ronaldo', email: 'ronaldo@gmail.com', id: 4, rfid: 'D4C3B2A1' },
-    { admin: false, name: 'Vicente', email: 'vicente@gmail.com', id: 5, rfid: '43B2A1D' },
-    { admin: false, name: 'Rafael', email: 'rafael@gmail.com', id: 6, rfid: 'F1E2D3C' },
+    { admin: false, name: 'Joao', email: 'joao@gmail.com', id: 2, rfid: 'A0B8CCDF', password: '123' },
+    { admin: false, name: 'Claudia', email: 'claudia@gmail.com', id: 3, rfid: 'C4A5B6D7', password: '123' },
+    { admin: false, name: 'Ronaldo', email: 'ronaldo@gmail.com', id: 4, rfid: 'D4C3B2A1', password: '123' },
+    { admin: false, name: 'Vicente', email: 'vicente@gmail.com', id: 5, rfid: '43B2A1D', password: '123' },
+    { admin: false, name: 'Rafael', email: 'rafael@gmail.com', id: 6, rfid: 'F1E2D3C', password: '123' },
 ])
 
 </script>

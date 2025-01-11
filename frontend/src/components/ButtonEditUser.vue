@@ -47,6 +47,12 @@ defineEmits(['submit'])
           <Input id="username"   class="col-span-3"  v-model="model.email"/>
         </div>
         <div class="grid grid-cols-4 items-center gap-4">
+          <Label for="password" class="text-right">
+            Password
+          </Label>
+          <Input id="password"   class="col-span-3"  v-model="model.password"/>
+        </div>
+        <div class="grid grid-cols-4 items-center gap-4">
           <Label for="username" class="text-right">
             RFID
           </Label>

@@ -5,6 +5,7 @@ import AdminMachines from '@/views/AdminMachines.vue'
 import UserDashboard from '@/views/UserDashboard.vue'
 import Navbar from '@/views/Navbar.vue'
 import AdminUsers from '@/views/AdminUsers.vue'
+import UserAvailableMachines from '@/views/UserAvailableMachines.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,6 +36,15 @@ const router = createRouter({
       name: 'machines',
       components: {
         default: AdminMachines,
+        Navbar: Navbar,
+      },
+    },
+
+    {
+      path: '/',
+      name: 'home',
+      components: {
+        default: UserAvailableMachines,
         Navbar: Navbar,
       },
     },
