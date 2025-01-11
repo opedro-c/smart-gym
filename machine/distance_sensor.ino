@@ -8,10 +8,6 @@
 uint8_t numberOfRepetitions = 0;
 uint8_t numberOfSets = 0;
 
-struct ExercisePayload {
-  char* userId;
-};
-
 TimerHandle_t repTimerHandle = NULL;
 TimerHandle_t setTimerHandle = NULL;
 

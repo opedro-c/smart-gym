@@ -1,6 +1,4 @@
 void setup() {
-  // put your setup code here, to run once:
-  ExercisePayload test;
   Serial.begin(115200);
   Serial.println("Hello, ESP32!");
   pinMode(PIN_TRIG, OUTPUT);
@@ -33,6 +31,5 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
   delay(10); // this speeds up the simulation, remove later
 }
