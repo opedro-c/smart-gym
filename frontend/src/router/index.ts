@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Signin from '@/views/Signin.vue'
 import SigninCreatePassword from '@/views/SigninCreatePassword.vue'
-import AdminRfid from '@/views/AdminRfid.vue'
 import AdminMachines from '@/views/AdminMachines.vue'
 import UserDashboard from '@/views/UserDashboard.vue'
 import Navbar from '@/views/Navbar.vue'
+import AdminUsers from '@/views/AdminUsers.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,16 +25,7 @@ const router = createRouter({
       path: '/admin/users',
       name: 'users',
       components: {
-        default: AdminRfid,
-        Navbar: Navbar,
-      },
-    },
-
-    {
-      path: '/admin/rfids',
-      name: 'rfids',
-      components: {
-        default: AdminRfid,
+        default: AdminUsers,
         Navbar: Navbar,
       },
     },

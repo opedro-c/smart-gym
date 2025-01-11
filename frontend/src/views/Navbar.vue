@@ -15,7 +15,6 @@ const authStore = useAuthStore()
 const adminOptions = [
   { title: "Users", link: "/admin/users" },
   { title: "Machines", link: "/admin/machines" },
-  { title: "Rfids", link: "/admin/rfids" },
 ] as const;
 
 const userOptions = [
