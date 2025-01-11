@@ -42,7 +42,7 @@ definitions:
 info:
   contact: {}
 paths:
-  /admin/machines/:
+  /admin/machines:
     post:
       consumes:
       - application/json
@@ -63,6 +63,12 @@ paths:
     delete:
       consumes:
       - application/json
+      parameters:
+      - description: Machine ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -73,6 +79,11 @@ paths:
       consumes:
       - application/json
       parameters:
+      - description: Machine ID
+        in: path
+        name: id
+        required: true
+        type: integer
       - description: Machine Data
         in: body
         name: machineData

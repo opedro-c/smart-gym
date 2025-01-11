@@ -30,7 +30,7 @@ func GetMachines(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-// @Router			/admin/machines/ [post]
+// @Router			/admin/machines [post]
 // @Success			201	{object}	any
 // @Param			machineData body machine.MachineData true "Machine Data"
 // @Accept			json
@@ -56,6 +56,7 @@ func CreateMachine(w http.ResponseWriter, r *http.Request) error {
 
 // @Router			/admin/machines/{id} [delete]
 // @Success			200	{object}	any
+// @Param			id   path      int  true  "Machine ID"
 // @Accept			json
 // @Produce			json
 func DeleteMachine(w http.ResponseWriter, r *http.Request) error {
@@ -75,6 +76,7 @@ func DeleteMachine(w http.ResponseWriter, r *http.Request) error {
 
 // @Router			/admin/machines/{id} [put]
 // @Success			200	{object}	any
+// @Param			id   path      int  true  "Machine ID"
 // @Param			machineData body machine.MachineData true "Machine Data"
 // @Accept			json
 // @Produce			json

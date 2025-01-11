@@ -4,7 +4,7 @@
         "contact": {}
     },
     "paths": {
-        "/admin/machines/": {
+        "/admin/machines": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -41,6 +41,13 @@
                 ],
                 "parameters": [
                     {
+                        "type": "integer",
+                        "description": "Machine ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "Machine Data",
                         "name": "machineData",
                         "in": "body",
@@ -63,6 +70,15 @@
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Machine ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
                 ],
                 "responses": {
                     "200": {

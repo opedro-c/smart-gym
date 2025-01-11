@@ -28,7 +28,7 @@ func MakeAppRouter() chi.Router {
 		r.Put("/users/{id}", u.MakeRouteHandler(user.UpdateUserHandler))
 		r.Put("/users/{id}/rfids/{rfid}", u.MakeRouteHandler(user.UpdateUserRfidsHandler))
 
-		r.Post("/machines/", u.MakeRouteHandler(machine.CreateMachine))
+		r.Post("/machines", u.MakeRouteHandler(machine.CreateMachine))
 		r.Put("/machines/{id}", u.MakeRouteHandler(machine.UpdateMachine))
 		r.Delete("/machines/{id}", u.MakeRouteHandler(machine.DeleteMachine))
 	})
