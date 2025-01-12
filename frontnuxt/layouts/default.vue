@@ -12,11 +12,12 @@ const adminOptions = [
 ] as const;
 
 const userOptions = [
-  { title: "Dashboard", link: "/dashboards" },
+  { title: "Gym", link: "/machines" },
+  { title: "Dashboard", link: "/dashboard" },
 ] as const;
 
-// const activeOptions = authStore.user?.admin ? adminOptions : userOptions
-const activeOptions = adminOptions 
+const { user } = useAuthUser()
+const activeOptions = computed(() => user.value?.admin ? adminOptions : userOptions)
 
 
 const STYLE_HOVER_MARK_LINE_EFFECT = "relative after:content-[''] after:absolute after:left-0 after:bottom-0 after:h-[1px] after:w-0 after:bg-primary hover:after:w-[95%] after:transition-all after:ease-in-out after:duration-300"

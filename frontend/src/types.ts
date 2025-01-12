@@ -5,7 +5,7 @@ export type Userdata = {
     name: string,
     email: string
     password: string
-    rfid: string
+    rfid?: string
 }
 
 export type MachineData = {

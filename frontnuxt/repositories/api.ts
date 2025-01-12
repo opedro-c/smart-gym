@@ -25,7 +25,7 @@ export const login = (credentials: { email: string; password: string }) =>
 
 // Admin API
 export const adminLogin = (credentials: { email: string; password: string }) =>
-  $fetch<{ token: string }>(`${backendHost}/admin/auth/login`, {
+  $fetch<UserData>(`${backendHost}/admin/auth/login`, {
     method: 'POST',
     body: credentials,
   });

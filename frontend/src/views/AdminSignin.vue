@@ -70,10 +70,7 @@ onUnmounted(() => {
     <main class="relative flex flex-col justify-center items-center flex-1 p-5">
       <main>
         <header class="text-center mb-5">
-          <h1 class="text-2xl font-semibold">Login</h1>
-          <small class="text-sm text-muted-foreground">
-            Entre no sistema para poder desfrutar das funcionalidades.
-          </small>
+          <h1 class="text-2xl font-semibold">Admin</h1>
         </header>
         <form @submit="onSubmit" class="w-full max-w-[450px]">
           <FormField v-slot="{ componentField }" name="email">

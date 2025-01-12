@@ -6,25 +6,27 @@ import UserDashboard from '@/views/UserDashboard.vue'
 import Navbar from '@/views/Navbar.vue'
 import AdminUsers from '@/views/AdminUsers.vue'
 import UserAvailableMachines from '@/views/UserAvailableMachines.vue'
+import AdminSignin from '@/views/AdminSignin.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/login',
+      path: '/',
       name: 'login',
       component: Signin,
     },
+
     {
-      path: '/new-password',
-      name: 'new-password',
-      component: SigninCreatePassword,
+      path: '/admin',
+      name: 'admin-login',
+      component: AdminSignin,
     },
 
 
     {
       path: '/admin/users',
-      name: 'users',
+      name: 'admin-users-managing',
       components: {
         default: AdminUsers,
         Navbar: Navbar,
@@ -33,7 +35,7 @@ const router = createRouter({
 
     {
       path: '/admin/machines',
-      name: 'machines',
+      name: 'admin-machines',
       components: {
         default: AdminMachines,
         Navbar: Navbar,
@@ -41,8 +43,8 @@ const router = createRouter({
     },
 
     {
-      path: '/',
-      name: 'home',
+      path: '/machines',
+      name: 'user-view-machines',
       components: {
         default: UserAvailableMachines,
         Navbar: Navbar,

@@ -1,3 +1,3 @@
 <template>
-    Ola
+    Dashboard
 </template>
