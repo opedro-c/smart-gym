@@ -8,6 +8,8 @@ const showingUsers = ref(users);
 async function updateUser(userIndex: number) {
     try {
         await useApi().updateUser(users[userIndex].id, users[userIndex].data);
+        await useApi().updateUserRfids(users[userIndex].id, users[userIndex].rfid);
+
         users = await useApi().getAllUsers();
         showingUsers.value = users;
     } catch (error) {

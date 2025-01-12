@@ -45,7 +45,7 @@ export const updateUser = (id: number, user: Partial<UserData>) =>
     body: user,
   });
 
-export const updateUserRfids = (id: string, rfid: string) =>
+export const updateUserRfids = (id: number, rfid: string) =>
   $fetch<UserData>(`${backendHost}/admin/users/${id}/rfids/${rfid}`, {
     method: 'PUT',
   });
