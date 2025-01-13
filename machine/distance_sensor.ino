@@ -21,8 +21,6 @@ TimerHandle_t secondsTimerHandle = NULL;
 EventGroupHandle_t updateLcdEventGroup = NULL;
 
 void finishCurrentSet(TimerHandle_t xTimer) {
-  Serial.printf("Set #%d finished: %d reps\n",
-                numberOfSets, numberOfRepetitions);
   numberOfRepetitions = 0;
   numberOfSets++;
   seconds = 0;
@@ -31,7 +29,6 @@ void finishCurrentSet(TimerHandle_t xTimer) {
 }
 
 void finishCurrentExercise(TimerHandle_t xTimer) {
-  Serial.printf("Exercise finished: %d sets\n", numberOfSets);
   numberOfRepetitions = 0;
   numberOfSets = 0;
   seconds = 0;
@@ -55,10 +52,8 @@ void countNumberOfRepetitions(void *pvParameters) {
 
     int distance = measureWeightDistance();
 
-    if (distance <= DISTANCE_THRESHOLD_PUSH
-        && !isStillLifted) {
+    if (distance <= DISTANCE_THRESHOLD_PUSH && !isStillLifted) {
       if (numberOfRepetitions == 1) {
-        Serial.println("Starting seconds timer");
         xTimerReset(secondsTimerHandle, portMAX_DELAY);
       }
       isResting = false;
@@ -75,7 +70,6 @@ void countNumberOfRepetitions(void *pvParameters) {
 
 void incrementSecond(TimerHandle_t xTimer) {
   seconds++;
-  Serial.println(seconds);
   xEventGroupSetBits(updateLcdEventGroup, BIT_UPDATE_DISPLAY);
 }
 
