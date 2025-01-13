@@ -1,6 +1,5 @@
-// import { useLocalStorage } from '@vueuse/core'
-import { computed, ref } from 'vue'
-import type { UserData } from '~/types'
+import { computed } from 'vue'
+import type { UserData } from '~/lib/types'
 
 export const useAuthUser = () => {
   const user = useState('user', () => null as UserData | null)

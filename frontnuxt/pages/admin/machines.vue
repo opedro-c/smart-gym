@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useToast } from '@/components/ui/toast/use-toast'
-import type { MachineData } from '~/types';
+import type { MachineData } from '~/lib/types';
 const { toast } = useToast()
 
 let machines = await useApi().getMachines();

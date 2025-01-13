@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { GetUserData } from '~/repositories/api';
-import type { UserData } from '~/types';
+import type { UserData } from '~/lib/types';
 
 const model = defineModel<GetUserData>({required: true})
 

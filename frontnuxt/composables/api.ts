@@ -1,5 +1,9 @@
-import * as ApiRepository from '~/repositories/api'
+import * as MachineRepository from '~/repositories/machine'
+import * as UserRepository from '~/repositories/user'
 
 export const useApi = () => {
-  return ApiRepository
+  return {
+    ...MachineRepository,
+    ...UserRepository
+  }
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { MachineData } from '@/types';
+import type { MachineData } from '~/lib/types';
 
 const model = defineModel<MachineData>({required: true})
 
