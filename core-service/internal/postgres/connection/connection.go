@@ -15,7 +15,7 @@ var (
 
 func GetConnection() *sqlc.Queries {
 	once.Do(func() {
-		db, err := sql.Open("pgx", "postgres://gym:gym@localhost:5432/gym")
+		db, err := sql.Open("pgx", os.Getenv("DATABASE_URL"))
 		if err != nil {
 			fmt.Printf("Unable to connect to database: %v\n", err)
 			os.Exit(1)
