@@ -4,6 +4,10 @@ void setup() {
   pinMode(PIN_TRIG, OUTPUT);
   pinMode(PIN_ECHO, INPUT);
 
+  // set up the LCD's number of columns and rows:
+  lcd.begin(16, 2);
+  updateLcdEventGroup = xEventGroupCreate();
+
   repTimerHandle = xTimerCreate(
     "repTimer",
     pdMS_TO_TICKS(TIMEOUT_CURRENT_SET_MS),
@@ -20,6 +24,14 @@ void setup() {
     finishCurrentExercise
   );
 
+  secondsTimerHandle = xTimerCreate(
+    "secondsTimer",
+    pdMS_TO_TICKS(1000),
+    pdTRUE,
+    (void *) 0,
+    incrementSecond
+  );
+
   xTaskCreate(
     countNumberOfRepetitions,
     "countReps",
@@ -28,6 +40,17 @@ void setup() {
     1,
     NULL
   );
+
+  xTaskCreate(
+    displayStuffOnLCD,
+    "displayStuffOnLCD",
+    4094,
+    NULL,
+    1,
+    NULL
+  );
+
+  displayWaitingRfid();
 }
 
 void loop() {
