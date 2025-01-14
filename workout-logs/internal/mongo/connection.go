@@ -1,8 +1,8 @@
 package mongo
 
 import (
+	"cloud-gym/internal/config"
 	"context"
-	"os"
 	"sync"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -16,7 +16,7 @@ var (
 
 func GetConnection() *mongo.Client {
 	once.Do(func() {
-		uri := os.Getenv("MONGODB_URL") // "mongodb://gym:gym@localhost:27017"
+		uri := config.MongoUrl // "mongodb://gym:gym@localhost:27017"
 		if uri == "" {
 			panic("Missing MONGODB_URI environment variable")
 		}

@@ -2,12 +2,12 @@ package main
 
 import (
 	"cloud-gym/internal/adapter"
+	"cloud-gym/internal/config"
 	"cloud-gym/internal/mongo"
-	"log"
-	"net/http"
-
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"log"
+	"net/http"
 
 	// swagger
 	_ "cloud-gym/docs"
@@ -22,7 +22,16 @@ import (
 // @accept json
 func main() {
 	mongo.GetConnection()
+	mqttClient := adapter.NewMosquittoClient(
+		config.MosquittoDomain,
+		config.MqttPort,
+		config.MqttClientId,
+		config.MqttUsername,
+		config.MqttPassword,
+		config.MqttCleanSession == "true",
+	)
 
+	defer (*mqttClient).Disconnect(1000)
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 
