@@ -19,6 +19,8 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+    networks:
+      - smart_gym_network
 
   mongo-express:
     image: mongo-express
@@ -30,14 +32,18 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGODB_PASSWORD}
       ME_CONFIG_MONGODB_URL: mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@mongo:27017/
       ME_CONFIG_BASICAUTH: false
+    networks:
+      - smart_gym_network
 
   workout-logs:
     build:
-      context: ..
+      context: ../workout-logs
       dockerfile: Dockerfile
     env_file: .env
     depends_on:
       - mosquitto
+      - mongo
+      - mongo-express
     ports:
       - "3030:3030"
     environment:

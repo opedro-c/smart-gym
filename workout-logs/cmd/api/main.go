@@ -6,8 +6,9 @@ import (
 	"cloud-gym/internal/mongo"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"log"
+	"log/slog"
 	"net/http"
+	"os"
 
 	// swagger
 	_ "cloud-gym/docs"
@@ -21,6 +22,7 @@ import (
 // @BasePath /api/v1
 // @accept json
 func main() {
+	setUpLogger()
 	mongo.GetConnection()
 	mqttClient := adapter.NewMosquittoClient(
 		config.MosquittoDomain,
@@ -45,6 +47,28 @@ func main() {
 		httpSwagger.URL("http://localhost:3030/swagger/doc.json"), //The url pointing to API definition
 	))
 
-	log.Println("Server is running on port 3030")
+	slog.Info("Server started at :3030")
 	http.ListenAndServe(":3030", r)
+}
+
+func setUpLogger() {
+	logLevelEnv := config.LogLevel
+	var logLevel slog.Level
+	switch logLevelEnv {
+	case "DEBUG":
+		slog.Info("Setting log level to DEBUG")
+		logLevel = slog.LevelDebug
+	case "INFO":
+		slog.Info("Setting log level to INFO")
+		logLevel = slog.LevelInfo
+	case "ERROR":
+		slog.Info("Setting log level to ERROR")
+		logLevel = slog.LevelError
+	}
+	opts := &slog.HandlerOptions{
+		Level: logLevel,
+	}
+	handler := slog.NewJSONHandler(os.Stdout, opts)
+	logger := slog.New(handler)
+	slog.SetDefault(logger)
 }

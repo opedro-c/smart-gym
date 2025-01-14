@@ -11,7 +11,7 @@ import (
 
 func CreateExerciseMQTTHandler(client MQTT.Client, msg MQTT.Message) {
 	var input []exercise.ExerciseRecord
-
+	slog.Debug("Received message from MQTT Broker", "topic", msg.Topic(), "message", string(msg.Payload()))
 	if err := utils.ParseMQTTPayload(msg, &input); err != nil {
 		slog.Error(err.Error())
 		return
@@ -23,9 +23,8 @@ func CreateExerciseMQTTHandler(client MQTT.Client, msg MQTT.Message) {
 			return
 		}
 	}
-
 	useCase := usecases.NewCreateExercises(exercise.NewMongoExerciseRepository(mongo.GetConnection()))
-
+	slog.Debug("Executing CreateExercises use case")
 	_, err := useCase.Execute(input)
 
 	if err != nil {

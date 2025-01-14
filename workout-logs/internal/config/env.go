@@ -12,4 +12,6 @@ var (
 	MqttPassword     = os.Getenv("MQTT_PASSWORD")
 	MqttCleanSession = os.Getenv("MQTT_CLEAN_SESSION")
 	MongoUrl         = os.Getenv("MONGODB_URL")
+
+	LogLevel = os.Getenv("LOG_LEVEL")
 )
