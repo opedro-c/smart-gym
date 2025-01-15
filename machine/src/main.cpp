@@ -1,3 +1,9 @@
+#include <lcd.hpp>
+
+const char* ntpServer = "time.google.com";
+const long  gmtOffset_sec = 0;
+const int   daylightOffset_sec = 3600;
+
 void setup() {
   Serial.begin(115200);
   pinMode(PIN_TRIG, OUTPUT);
@@ -5,6 +11,11 @@ void setup() {
 
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
+  lcd.print("Initializing...");
+  
+  connectWifi();
+  setupMQTT();
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
   updateLcdEventGroup = xEventGroupCreate();
 
   repTimerHandle = xTimerCreate(
@@ -49,6 +60,7 @@ void setup() {
     NULL
   );
 
+  lcd.clear();
   displayWaitingRfid();
 }
 

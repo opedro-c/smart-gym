@@ -1,10 +1,15 @@
 // include the library code:
+#include "distance_sensor.hpp"
 #include <LiquidCrystal.h>
 
 // initialize the library with the numbers of the interface pins
 LiquidCrystal lcd(19, 23, 18, 17, 16, 15);
 
-
+void displayRepsAndSets();
+void displayTime();
+void displayResting();
+void displayWorkOut();
+void displayWaitingRfid();
 
 void displayStuffOnLCD(void *pvParameters) {
 
