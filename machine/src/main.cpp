@@ -43,14 +43,14 @@ void setup() {
     incrementSecond
   );
 
-  // xTaskCreate(
-  //   readRFID,
-  //   "readRFID",
-  //   1024,
-  //   NULL,
-  //   0,
-  //   NULL
-  // );
+  xTaskCreate(
+    readRFID,
+    "readRFID",
+    4094,
+    NULL,
+    0,
+    NULL
+  );
 
   xTaskCreate(
     countNumberOfRepetitions,

@@ -13,7 +13,7 @@ typedef struct {
 } ExerciseData;
 
 typedef struct {
-    char userID[64];
+    uint64_t userID;
     char originID[64];
     ExerciseData data[MAX_DATA_LENGTH];
     size_t dataLength;
@@ -26,9 +26,9 @@ typedef struct {
 } ExerciseRecord;
 
 
-ExerciseRecord newExerciseRecord(const char* userID, const char* originID) {
+ExerciseRecord newExerciseRecord(uint64_t userID, const char* originID) {
     ExerciseRecord record;
-    strncpy(record.userID, userID, sizeof(record.userID));
+    record.userID = userID;
     strncpy(record.originID, originID, sizeof(record.originID));
     return record;
 }
@@ -43,7 +43,7 @@ ExerciseData newExerciseData(time_t startedAt, time_t finishedAt, uint16_t weigh
 
 ExerciseRecord copyExerciseRecord(ExerciseRecord record) {
     ExerciseRecord newRecord;
-    strncpy(newRecord.userID, record.userID, sizeof(newRecord.userID));
+    newRecord.userID = record.userID;
     strncpy(newRecord.originID, record.originID, sizeof(newRecord.originID));
     newRecord.dataLength = record.dataLength;
     for (size_t i = 0; i < record.dataLength; i++) {

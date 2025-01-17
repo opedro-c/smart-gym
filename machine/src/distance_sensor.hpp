@@ -26,7 +26,7 @@ TimerHandle_t secondsTimerHandle = NULL;
 EventGroupHandle_t updateLcdEventGroup = NULL;
 
 ExerciseRecord exerciseRecords[MAX_EXERCISES];
-ExerciseRecord exerciseRecord = newExerciseRecord(origin_id, user_id);
+ExerciseRecord exerciseRecord = newExerciseRecord(user_id, origin_id);
 
 void addExerciseRecord()
 {

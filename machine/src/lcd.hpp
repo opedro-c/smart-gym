@@ -17,7 +17,7 @@ void displayStuffOnLCD(void *pvParameters) {
   while (true) {
     EventBits_t uxBits = xEventGroupWaitBits(
                            updateLcdEventGroup,   /* The event group being tested. */
-                           BIT_UPDATE_DISPLAY | BIT_WAITING_RFID, /* The bits within the event group to wait for. */
+                           BIT_UPDATE_DISPLAY | BIT_WAITING_RFID | BIT_WAITING_LIFT_WEIGHT, /* The bits within the event group to wait for. */
                            pdTRUE,        /* bits cleared before returning. */
                            pdFALSE,       /* Don't wait for both bits, either bit will do. */
                            portMAX_DELAY
