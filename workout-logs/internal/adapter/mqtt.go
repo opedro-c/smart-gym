@@ -1,6 +1,7 @@
 package adapter
 
 import (
+	"cloud-gym/internal/config"
 	"cloud-gym/internal/core/exercise/adapter"
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 	"log/slog"
@@ -17,7 +18,7 @@ func NewMosquittoClient(
 ) *MQTT.Client {
 
 	opts := MQTT.NewClientOptions().
-		AddBroker(strings.Join([]string{"tcp://", mqttDomain, ":", mqttPort}, "")).
+		AddBroker(strings.Join([]string{"mqtt://", mqttDomain, ":", mqttPort}, "")).
 		SetClientID(mqttClientId).
 		SetUsername(mqttUsername).
 		SetPassword(mqttPassword).
@@ -29,10 +30,11 @@ func NewMosquittoClient(
 		slog.Error("Failed to connect to MQTT Broker", token.Error())
 		panic(token.Error())
 	}
-
+	topic := strings.Join([]string{config.MqttTopicPrefix, "/exercise"}, "")
 	slog.Info("Connected to MQTT Broker")
-	slog.Info("Subscribing to MQTT Broker", "topic", "/exercise")
-	if token := pahoClient.Subscribe("/exercise", 2, adapter.CreateExerciseMQTTHandler); token.Wait() && token.Error() != nil {
+	slog.Info("Subscribing to MQTT Broker", "topic", topic)
+
+	if token := pahoClient.Subscribe("/exercise", 0, adapter.CreateExerciseMQTTHandler); token.Wait() && token.Error() != nil {
 		slog.Error("Failed to subscribe to MQTT Broker", token.Error())
 		panic(token.Error())
 	}

@@ -5,14 +5,15 @@ const long  gmtOffset_sec = 0;
 const int   daylightOffset_sec = 3600;
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   pinMode(PIN_TRIG, OUTPUT);
   pinMode(PIN_ECHO, INPUT);
-
-  // set up the LCD's number of columns and rows:
-  lcd.begin(16, 2);
+  lcd.init();
+  lcd.backlight();
+  lcd.clear();
+  lcd.setCursor(0, 0);
   lcd.print("Initializing...");
-  
+  mfrc522.PCD_Init();
   connectWifi();
   setupMQTT();
   configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
@@ -42,12 +43,21 @@ void setup() {
     incrementSecond
   );
 
+  // xTaskCreate(
+  //   readRFID,
+  //   "readRFID",
+  //   1024,
+  //   NULL,
+  //   0,
+  //   NULL
+  // );
+
   xTaskCreate(
     countNumberOfRepetitions,
     "countReps",
     4094,
     NULL,
-    1,
+    2,
     NULL
   );
 
@@ -65,5 +75,5 @@ void setup() {
 }
 
 void loop() {
-  delay(10); // this speeds up the simulation, remove later
+  vTaskDelete(NULL); // remove arduino's main loop
 }

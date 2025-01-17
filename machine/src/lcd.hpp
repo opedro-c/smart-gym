@@ -1,15 +1,16 @@
 // include the library code:
-#include "distance_sensor.hpp"
-#include <LiquidCrystal.h>
+#include "rfid.hpp"
+#include <LiquidCrystal_I2C.h>
 
 // initialize the library with the numbers of the interface pins
-LiquidCrystal lcd(19, 23, 18, 17, 16, 15);
+LiquidCrystal_I2C lcd = LiquidCrystal_I2C(0x27, 16, 2);
 
 void displayRepsAndSets();
 void displayTime();
 void displayResting();
 void displayWorkOut();
 void displayWaitingRfid();
+void displayWaitingLiftWeight();
 
 void displayStuffOnLCD(void *pvParameters) {
 
@@ -32,6 +33,8 @@ void displayStuffOnLCD(void *pvParameters) {
       displayTime();
     } else if ( ( uxBits & BIT_WAITING_RFID ) != 0 ) {
       displayWaitingRfid();
+    } else if ( ( uxBits & BIT_WAITING_LIFT_WEIGHT ) != 0 ) {
+      displayWaitingLiftWeight();
     }
   }
 }
@@ -72,5 +75,12 @@ void displayWaitingRfid() {
   lcd.print("Approach card");
   lcd.setCursor(0, 1);
   lcd.print("to start");
+}
+
+void displayWaitingLiftWeight() {
+  lcd.setCursor(0, 0);
+  lcd.print("Lift weight");
+  lcd.setCursor(0, 1);
+  lcd.print("to count reps");
 }
 

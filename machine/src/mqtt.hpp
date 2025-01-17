@@ -3,12 +3,13 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 
-const char* ssid     = "Wokwi-GUEST";
-const char* password = "";
+const char* ssid     = "POCO X3 Pro";
+const char* password = "senhacomplicadaegrande";
 
-const char* mqtt_server = "maqiatto.com";
+const char* mqtt_server = "192.168.95.89";
 const int mqtt_port = 1883;
-const char* mqtt_topic = "pedroc_aragao@outlook.com/exercise";
+const char* mqtt_exercise_topic = "/exercise";
+const char* mqtt_machine_status_topic = "/machine_status";
 const char* mqtt_user = "pedroc_aragao@outlook.com";
 const char* mqtt_password = "senhacomplicadaegrande";
 
@@ -32,14 +33,12 @@ String serializeExerciseRecords(ExerciseRecord* records, size_t recordLength) {
     JsonDocument doc; // Adjust size as needed for larger payloads
     Serial.println("Serializing records to JSON...");
     for (size_t i = 0; i < recordLength; i++) {
-        Serial.printf("Record #%d: %s, %s\n", i, records[i].userID, records[i].originID);
         JsonObject recordObj = doc.createNestedObject();
         recordObj["user_id"] = records[i].userID;
         recordObj["origin_id"] = records[i].originID;
 
         JsonArray dataArray = recordObj.createNestedArray("data");
         for (size_t j = 0; j < records[i].dataLength; j++) {
-            Serial.printf("  Data #%d: %d, %d, %d\n", j, records[i].data[j].startedAt, records[i].data[j].finishedAt, records[i].data[j].weight);
             JsonObject dataObj = dataArray.createNestedObject();
             dataObj["started_at"] = records[i].data[j].startedAt;
             dataObj["finished_at"] = records[i].data[j].finishedAt;
@@ -50,25 +49,62 @@ String serializeExerciseRecords(ExerciseRecord* records, size_t recordLength) {
     // Serialize JSON document to a string
     String output;
     serializeJson(doc, output);
-    Serial.println("Serialized JSON:");
-    Serial.println(output);
     return output;
 }
 
 // Function to publish the ExerciseRecord over MQTT
 void publishExerciseRecord(ExerciseRecord* record, size_t recordLength) {
     String payload = serializeExerciseRecords(record, recordLength);
-    if (client.publish(mqtt_topic, payload.c_str())) {
-        Serial.println("Record published successfully:");
-        Serial.println(payload);
+    uint8_t retries = 3;
+    while (!client.connected() && retries > 0) {
+        Serial.println("Reconnecting to MQTT...");
+        if (client.connect("ESP32Client", mqtt_user, mqtt_password)) {
+            Serial.println("Connected to MQTT broker.");
+        } else {
+            Serial.print("Failed to connect. State: ");
+            Serial.println(client.state());
+            retries--;
+        }
+    }
+    if (client.publish(mqtt_exercise_topic, payload.c_str())) {
+        Serial.println("Published message to MQTT.");
     } else {
-        Serial.println("Failed to publish record.");
+        Serial.print("Client state: ");
+        Serial.println(client.state());
+        Serial.println("Failed to publish message to MQTT.");
+    }
+}
+
+void publishMachineStatus(const char* machine) {
+    uint8_t retries = 3;
+    while (!client.connected() && retries > 0) {
+        Serial.println("Reconnecting to MQTT...");
+        if (client.connect("ESP32Client", mqtt_user, mqtt_password)) {
+            Serial.println("Connected to MQTT broker.");
+        } else {
+            Serial.print("Failed to connect. State: ");
+            Serial.println(client.state());
+            retries--;
+        }
+    }
+    if (client.publish(mqtt_machine_status_topic, machine)) {
+        Serial.println("Published message to MQTT.");
+    } else {
+        Serial.print("Client state: ");
+        Serial.println(client.state());
+        Serial.println("Failed to publish message to MQTT.");
     }
 }
 
 // MQTT connection setup
 void setupMQTT() {
     client.setServer(mqtt_server, mqtt_port);
+    client.setKeepAlive(60);
+    if (client.setBufferSize(4094)) {
+        Serial.println("MQTT buffer size set to: 4094");
+    } else {
+        Serial.println("Failed to set MQTT buffer size.");
+    }
     while (!client.connected()) {
         Serial.println("Connecting to MQTT...");
         if (client.connect("ESP32Client", mqtt_user, mqtt_password)) {

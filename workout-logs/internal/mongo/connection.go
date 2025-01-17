@@ -16,9 +16,9 @@ var (
 
 func GetConnection() *mongo.Client {
 	once.Do(func() {
-		uri := config.MongoUrl // "mongodb://gym:gym@localhost:27017"
+		uri := config.MongoUrl
 		if uri == "" {
-			panic("Missing MONGODB_URI environment variable")
+			panic("Missing MONGODB_URL environment variable")
 		}
 
 		clientConnected, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(uri))
