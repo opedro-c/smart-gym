@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "author": "Pedro Costa",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-breadboard", "id": "bb1", "top": -300.6, "left": -266, "attrs": {} },
+    {
+      "type": "board-esp32-devkit-c-v4",
+      "id": "esp",
+      "top": -116.86,
+      "left": 3.7,
+      "rotate": 90,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-hc-sr04",
+      "id": "ultrasonic1",
+      "top": -324.9,
+      "left": -196.1,
+      "attrs": { "distance": "400" }
+    },
+    {
+      "type": "wokwi-lcd1602",
+      "id": "lcd1",
+      "top": -281.6,
+      "left": 120.8,
+      "attrs": { "pins": "i2c" }
+    }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "bb1:13t.e", "bb1:bp.10", "red", [ "v0" ] ],
+    [ "esp:5V", "bb1:bp.5", "red", [ "v0" ] ],
+    [ "bb1:14t.e", "esp:25", "cyan", [ "v124.8", "h19.2" ] ],
+    [ "bb1:15t.e", "esp:32", "magenta", [ "v115.2", "h28.8" ] ],
+    [ "esp:GND.1", "bb1:bn.9", "black", [ "v0" ] ],
+    [ "bb1:16t.e", "bb1:bn.12", "black", [ "v0" ] ],
+    [ "esp:21", "lcd1:SDA", "green", [ "v0" ] ],
+    [ "esp:22", "lcd1:SCL", "green", [ "v0" ] ],
+    [ "ultrasonic1:VCC", "bb1:13t.c", "", [ "$bb" ] ],
+    [ "ultrasonic1:TRIG", "bb1:14t.c", "", [ "$bb" ] ],
+    [ "ultrasonic1:ECHO", "bb1:15t.c", "", [ "$bb" ] ],
+    [ "ultrasonic1:GND", "bb1:16t.c", "", [ "$bb" ] ],
+    [ "lcd1:GND", "bb1:39t.a", "", [ "$bb" ] ],
+    [ "lcd1:VCC", "bb1:39t.b", "", [ "$bb" ] ],
+    [ "lcd1:SDA", "bb1:39t.c", "", [ "$bb" ] ],
+    [ "lcd1:SCL", "bb1:39t.d", "", [ "$bb" ] ],
+    [ "lcd1:GND", "esp:GND.3", "black", [ "h0" ] ],
+    [ "lcd1:VCC", "esp:3V3", "red", [ "h0" ] ]
+  ],
+  "dependencies": {}
+}
