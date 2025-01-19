@@ -6,18 +6,24 @@ import (
 	"cloud-gym/internal/mongo"
 	utils "cloud-gym/pkg"
 	s "cloud-gym/pkg/service"
+	"errors"
+	"github.com/go-chi/chi/v5"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"log/slog"
 	"net/http"
+	"strconv"
+	"time"
 )
 
-// Create Exercises Handler
+// CreateExerciseHandler Create Exercises Handler
 //
-//	@Summary		Create a couple of exercises
-//	@Tags			exercises
-//	@Accept			json
-//	@Produce		json
-//	@Param			exercises body []exercise.ExerciseRecord true "Exercises"
-//	@Success		200	{object}	any
-//	@Router			/exercises [post]
+//	@Summary	Create a couple of exercises
+//	@Tags		exercises
+//	@Accept		json
+//	@Produce	json
+//	@Param		exercises	body		[]exercise.ExerciseRecord	true	"Exercises"
+//	@Success	200			{object}	any
+//	@Router		/exercises [post]
 func CreateExerciseHandler(w http.ResponseWriter, r *http.Request) error {
 	var input []exercise.ExerciseRecord
 	if err := utils.ParseJson(r, &input); err != nil {
@@ -38,6 +44,58 @@ func CreateExerciseHandler(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	utils.WriteJSON(w, http.StatusCreated, result)
+
+	return nil
+}
+
+// GetExercisesHandler handles fetching exercises based on query parameters.
+//
+//	@Summary	Get exercises based on query parameters
+//	@Tags		exercises
+//	@Accept		json
+//	@Produce	json
+//	@Param		started_at	query		uint64	true	"Start time in Unix timestamp"
+//	@Param		finished_at	query		uint64	true	"Finish time in Unix timestamp"
+//	@Param		origin_id	path		string	true	"Origin ID"
+//	@Param		user_id		path		uint64	true	"User ID"
+//	@Success	200			{object}	any
+//	@Router		/users/{user_id}/origins/{origin_id}/exercises [get]
+func GetExercisesHandler(w http.ResponseWriter, r *http.Request) error {
+	startedAt, err := strconv.ParseInt(r.URL.Query().Get("started_at"), 10, 64)
+	finishedAt, err := strconv.ParseInt(r.URL.Query().Get("finished_at"), 10, 64)
+
+	if err != nil {
+		return s.NewServiceError(400, err)
+	}
+
+	_userId := chi.URLParam(r, "user_id")
+	userId, err := strconv.ParseUint(_userId, 10, 64)
+	if err != nil {
+		return s.NewServiceError(400, err)
+	}
+
+	originId := chi.URLParam(r, "origin_id")
+	if originId == "" {
+		return s.NewServiceError(400, errors.New("origin_id or user_id is empty on path parameter"))
+	}
+
+	useCase := usecases.NewGetExercises(getExerciseRepository())
+
+	input := usecases.InputGetExercises{
+		StartedAt:  primitive.NewDateTimeFromTime(time.Unix(startedAt, 0)),
+		FinishedAt: primitive.NewDateTimeFromTime(time.Unix(finishedAt, 0)),
+		OriginId:   originId,
+		UserId:     userId,
+	}
+	result, err := useCase.Execute(input)
+	if err != nil {
+		return err
+	}
+
+	err = utils.WriteJSON(w, http.StatusOK, result)
+	if err != nil {
+		slog.Debug(err.Error())
+	}
 
 	return nil
 }

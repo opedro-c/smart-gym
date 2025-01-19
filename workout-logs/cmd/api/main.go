@@ -15,12 +15,12 @@ import (
 	"github.com/swaggo/http-swagger"
 )
 
-// @title Smart-Gym API
-// @version 1.0
-// @description This is the strongest server ever.
+//	@title			Smart-Gym API
+//	@version		1.0
+//	@description	This is the strongest server ever.
 
-// @BasePath /api/v1
-// @accept json
+// @BasePath	/api/v1
+// @accept		json
 func main() {
 	setUpLogger()
 	mongo.GetConnection()

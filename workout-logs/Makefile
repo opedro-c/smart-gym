@@ -21,6 +21,10 @@ build:
 	mkdir -p $(BUILD_DIR)
 	go build -o $(BUILD_DIR)/$(APP_NAME) $(ENTRY)
 
+.PHONY: docs
+docs:
+	swag init -g internal/adapter/http.go
+
 .PHONY: debug
 debug:
 	if [ ! -d "$(BUILD_DIR)" ]; then \
