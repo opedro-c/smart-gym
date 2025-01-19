@@ -1,11 +1,12 @@
-package receiver
+package adapter
 
 import (
-	MQTT "github.com/eclipse/paho.mqtt.golang"
 	"status-machine-service/internal/core"
+
+	MQTT "github.com/eclipse/paho.mqtt.golang"
 )
 
-func ReceiveStatusOnHandler(client MQTT.Client, msg MQTT.Message) {
+func ReceiveStatusOnMqttHandler(client MQTT.Client, msg MQTT.Message) {
 	service := core.GetStatusService()
 	originID := string(msg.Payload())
 
@@ -17,7 +18,7 @@ func ReceiveStatusOnHandler(client MQTT.Client, msg MQTT.Message) {
 	service.SetStatusMachine(status)
 }
 
-func ReceiveStatusOffHandler(client MQTT.Client, msg MQTT.Message) {
+func ReceiveStatusOffMqttHandler(client MQTT.Client, msg MQTT.Message) {
 	service := core.GetStatusService()
 	originID := string(msg.Payload())
 
