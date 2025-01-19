@@ -12,3 +12,8 @@ export type MachineData = {
     name: string,
     origin_id: string
 }
+
+export type MachineStatus = {
+    origin_id: string
+    status: boolean
+}

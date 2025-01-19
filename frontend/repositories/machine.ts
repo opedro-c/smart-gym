@@ -1,8 +1,11 @@
-import type { MachineData } from '~/lib/types';
-import { BACKEND_HOST } from '~/lib/config';
+import type { MachineData, MachineStatus } from '~/lib/types';
+import { BACKEND_HOST, STATUS_HOST } from '~/lib/config';
 
 export const getMachines = () =>
   $fetch<MachineData[]>(`${BACKEND_HOST}/machines`);
+
+export const getActiveMachines = () =>
+  $fetch<MachineStatus[]>(`${STATUS_HOST}/status`);
 
 export const createMachine = (machine: MachineData) =>
   $fetch<MachineData>(`${BACKEND_HOST}/admin/machines`, {
