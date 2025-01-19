@@ -5,8 +5,7 @@ import (
 	"net/http"
 	"os"
 	"status-machine-service/internal/config"
-	"status-machine-service/internal/core/adapter/receiver"
-	"status-machine-service/internal/core/adapter/sender"
+	"status-machine-service/internal/core/adapter"
 	"strings"
 
 	MQTT "github.com/eclipse/paho.mqtt.golang"
@@ -34,16 +33,22 @@ func main() {
 	}
 	defer mqttClient.Disconnect(1000)
 
-	if token := mqttClient.Subscribe("/exercise", 0, receiver.ReceiveStatusOnHandler); token.Wait() && token.Error() != nil {
+	if token := mqttClient.Subscribe("/machine_status/on", 0, adapter.ReceiveStatusOnMqttHandler); token.Wait() && token.Error() != nil {
+		slog.Error("Failed to subscribe to MQTT Broker", token.Error())
+		panic(token.Error())
+	}
+	if token := mqttClient.Subscribe("/machine_status/off", 0, adapter.ReceiveStatusOffMqttHandler); token.Wait() && token.Error() != nil {
 		slog.Error("Failed to subscribe to MQTT Broker", token.Error())
 		panic(token.Error())
 	}
 	slog.Info("Connected to MQTT Broker")
 
 	/// ----------
-	/// WS
+	/// WS & HTTP
 	/// ----------
-	http.HandleFunc("/ws", sender.HandleConnections)
+	http.HandleFunc("/ws", adapter.HandleConnectionsWsHandler)
+	http.HandleFunc("/status", adapter.GetLastStatusHttpHandler)
+
 	go func() {
 		slog.Info("WebSocket server started on :8080")
 	}()
