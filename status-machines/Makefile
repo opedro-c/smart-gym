@@ -1,4 +1,4 @@
-APP_NAME := workout-logs
+APP_NAME := status-machines
 PKG := ./...
 BUILD_DIR := ./bin
 ENTRY := ./cmd/api/main.go
@@ -32,13 +32,10 @@ debug:
 clean:
 	rm -rf $(BUILD_DIR)/*
 
-.PHONY: migrate
-migrate:
-	go run internal/mongo/migrations/migrate/main.go
 
 .PHONY: help
 help:
-	@echo "Makefile for Gym service"
+	@echo "Makefile for Status machine service"
 	@echo ""
 	@echo "Usage:"
 	@echo "  make run        Run the application"
