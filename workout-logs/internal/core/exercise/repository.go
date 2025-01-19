@@ -4,6 +4,7 @@ import (
 	db "cloud-gym/internal/mongo"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"log/slog"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -59,7 +60,8 @@ func (r *MongoExerciseRepository) GetExercises(startedAt primitive.DateTime, fin
 		"user_id":     userId,
 	}
 
-	cursor, err := coll.Find(context.TODO(), filter)
+	opts := options.Find().SetSort(bson.D{{"started_at", 1}})
+	cursor, err := coll.Find(context.TODO(), filter, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -79,12 +81,12 @@ func (r *MongoExerciseRepository) GetExercises(startedAt primitive.DateTime, fin
 }
 
 type OutputGetExercises struct {
-	StartedAt  primitive.DateTime `bson:"started_at"`
-	FinishedAt primitive.DateTime `bson:"finished_at"`
-	OriginID   string             `bson:"origin_id"`
-	UserID     uint64             `bson:"user_id"`
+	StartedAt  primitive.DateTime `bson:"started_at" json:"started_at"`
+	FinishedAt primitive.DateTime `bson:"finished_at" json:"finished_at"`
+	OriginID   string             `bson:"origin_id" json:"origin_id"`
+	UserID     uint64             `bson:"user_id" json:"user_id"`
 	Data       struct {
-		Weight uint32 `bson:"weight"`
-	}
-	ID primitive.ObjectID `bson:"_id"`
+		Weight uint32 `bson:"weight" json:"weight"`
+	} `bson:"data" json:"data"`
+	ID primitive.ObjectID `bson:"_id" json:"id"`
 }

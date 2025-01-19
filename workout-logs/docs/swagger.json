@@ -1,15 +1,8 @@
 {
-    "consumes": [
-        "application/json"
-    ],
     "swagger": "2.0",
     "info": {
-        "description": "This is the strongest server ever.",
-        "title": "Smart-Gym API",
-        "contact": {},
-        "version": "1.0"
+        "contact": {}
     },
-    "basePath": "/api/v1",
     "paths": {
         "/exercises": {
             "post": {
@@ -35,6 +28,56 @@
                                 "$ref": "#/definitions/exercise.ExerciseRecord"
                             }
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/users/{user_id}/origins/{origin_id}/exercises": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "exercises"
+                ],
+                "summary": "Get exercises based on query parameters",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Start time in Unix timestamp",
+                        "name": "started_at",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Finish time in Unix timestamp",
+                        "name": "finished_at",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Origin ID",
+                        "name": "origin_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {

@@ -15,50 +15,51 @@ import (
 	"time"
 )
 
-// Create Exercises Handler
+// CreateExerciseHandler Create Exercises Handler
 //
-//	@Summary		Create a couple of exercises
-//	@Tags			exercises
-//	@Accept			json
-//	@Produce		json
-//	@Param			exercises body []exercise.ExerciseRecord true "Exercises"
-//	@Success		200	{object}	any
-//	@Router			/exercises [post]
-//func CreateExerciseHandler(w http.ResponseWriter, r *http.Request) error {
-//	var input []exercise.ExerciseRecord
-//	if err := utils.ParseJson(r, &input); err != nil {
-//		return s.NewServiceError(400, err)
-//	}
-//
-//	for _, data := range input {
-//		if err := utils.ValidateJsonStruct(&data); err != nil {
-//			return s.NewServiceError(400, err)
-//		}
-//	}
-//
-//	useCase := usecases.NewCreateExercises(getExerciseRepository())
-//
-//	result, err := useCase.Execute(input)
-//	if err != nil {
-//		return err
-//	}
-//
-//	utils.WriteJSON(w, http.StatusCreated, result)
-//
-//	return nil
-//}
+//	@Summary	Create a couple of exercises
+//	@Tags		exercises
+//	@Accept		json
+//	@Produce	json
+//	@Param		exercises	body		[]exercise.ExerciseRecord	true	"Exercises"
+//	@Success	200			{object}	any
+//	@Router		/exercises [post]
+func CreateExerciseHandler(w http.ResponseWriter, r *http.Request) error {
+	var input []exercise.ExerciseRecord
+	if err := utils.ParseJson(r, &input); err != nil {
+		return s.NewServiceError(400, err)
+	}
+
+	for _, data := range input {
+		if err := utils.ValidateJsonStruct(&data); err != nil {
+			return s.NewServiceError(400, err)
+		}
+	}
+
+	useCase := usecases.NewCreateExercises(getExerciseRepository())
+
+	result, err := useCase.Execute(input)
+	if err != nil {
+		return err
+	}
+
+	utils.WriteJSON(w, http.StatusCreated, result)
+
+	return nil
+}
 
 // GetExercisesHandler handles fetching exercises based on query parameters.
 //
-// @Summary      Get exercises based on query parameters
-// @Tags         exercises
-// @Accept       json
-// @Produce      json
-// @Param        started_at query uint64 true "Start time"
-// @Param        finished_at query uint64 true "Finish time"
-// @Param        origin_id query string true "Origin ID"
-// @Param        user_id query uint64 true "User ID"
-// @Success      200 {object} any
+//	@Summary	Get exercises based on query parameters
+//	@Tags		exercises
+//	@Accept		json
+//	@Produce	json
+//	@Param		started_at	query		uint64	true	"Start time in Unix timestamp"
+//	@Param		finished_at	query		uint64	true	"Finish time in Unix timestamp"
+//	@Param		origin_id	path		string	true	"Origin ID"
+//	@Param		user_id		path		uint64	true	"User ID"
+//	@Success	200			{object}	any
+//	@Router		/users/{user_id}/origins/{origin_id}/exercises [get]
 func GetExercisesHandler(w http.ResponseWriter, r *http.Request) error {
 	startedAt, err := strconv.ParseInt(r.URL.Query().Get("started_at"), 10, 64)
 	finishedAt, err := strconv.ParseInt(r.URL.Query().Get("finished_at"), 10, 64)
