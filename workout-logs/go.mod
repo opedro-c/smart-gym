@@ -5,6 +5,7 @@ go 1.23.2
 require (
 	github.com/eclipse/paho.mqtt.golang v1.5.0
 	github.com/go-chi/chi/v5 v5.1.0
+	github.com/go-chi/cors v1.2.1
 	github.com/go-playground/validator/v10 v10.23.0
 	github.com/swaggo/http-swagger v1.3.4
 	github.com/swaggo/swag v1.16.4
