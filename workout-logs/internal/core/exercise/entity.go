@@ -12,9 +12,9 @@ type ExerciseRecord struct {
 }
 
 type ExerciseData struct {
-	StartedAt  uint32 `json:"started_at" validate:"required"`
-	FinishedAt uint32 `json:"finished_at" validate:"required"`
-	Weight     uint32 `json:"weight" validate:"required"`
+	StartedAt  uint64 `json:"started_at" validate:"required"`
+	FinishedAt uint64 `json:"finished_at" validate:"required"`
+	Weight     uint64 `json:"weight" validate:"required"`
 }
 
 func NewExerciseCollectionRecord(exerciseRecords []ExerciseRecord) []m.ExerciseCollectionRecord {
@@ -34,7 +34,7 @@ func NewExerciseCollectionRecord(exerciseRecords []ExerciseRecord) []m.ExerciseC
 				StartedAt:  time.UnixMilli(int64(data.StartedAt)).UTC(),
 				FinishedAt: time.UnixMilli(int64(data.StartedAt)).UTC(),
 				Data: struct {
-					Weight uint32 `json:"weight" bson:"weight" validate:"required"`
+					Weight uint64 `json:"weight" bson:"weight" validate:"required"`
 				}{
 					Weight: data.Weight,
 				},
