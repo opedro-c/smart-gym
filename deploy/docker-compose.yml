@@ -113,6 +113,28 @@ services:
     depends_on:
       mosquitto:
         condition: service_healthy
+    
+  status-machines:
+    restart: unless-stopped
+    env_file: .env
+    build:
+      context: ../status-machines
+      dockerfile: Dockerfile
+    ports:
+      - "7070:7070"
+    environment:
+      MOSQUITTO_DOMAIN: ${MOSQUITTO_DOMAIN}
+      MQTT_PORT: ${MQTT_PORT}
+      MQTT_CLIENT_ID: ${MQTT_CLIENT_ID}
+      MQTT_USERNAME: ${MQTT_USERNAME}
+      MQTT_PASSWORD: ${MQTT_PASSWORD}
+      MQTT_CLEAN_SESSION: ${MQTT_CLEAN_SESSION}
+      MQTT_TOPIC_PREFIX: ${MQTT_TOPIC_PREFIX}
+    networks:
+      - smart_gym_network
+    depends_on:
+      mosquitto:
+        condition: service_healthy
 
 networks:
   smart_gym_network:
