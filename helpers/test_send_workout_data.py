@@ -13,20 +13,20 @@ def publish_messages(host: str, port: int, topic: str, user_id: int, origin_id: 
 
     current_time = start
     while current_time <= end:
-        payload = {
-            "user_id": user_id,
+        payload = [{
+            "user_id": str(user_id),
             "origin_id": origin_id,
-            "data": {
+            "data": [{
                 "started_at": current_time,
                 "finished_at": current_time + 60,
-                "weight": random.uniform(5, 20),
-            },
-        }
+                "weight": int(random.uniform(5, 20)),
+            }],
+        }]
 
         client.publish(topic, json.dumps(payload))
         print(f"Published message: {json.dumps(payload)}")
 
-        current_time += 600  # Increment by near 1 minute
+        current_time += 6000  # Increment by near 1 minute
         time.sleep(0.1)  # Small delay to avoid flooding the broker
 
     client.disconnect()
@@ -35,7 +35,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Publish MQTT messages with random weight data.")
     parser.add_argument("--host", type=str, default='localhost', help="MQTT broker address")
     parser.add_argument("--port", type=int, default=1883, help="MQTT broker port")
-    parser.add_argument("--topic", type=str, default='pedroc_aragao@outlook.com/exercise', help="MQTT topic to publish to")
+    parser.add_argument("--topic", type=str, default='/exercise', help="MQTT topic to publish to")
     parser.add_argument("--user_id", type=int, required=True, help="User ID")
     parser.add_argument("--origin_id", type=str, required=True, help="Origin ID")
     parser.add_argument("--start", type=int, required=True, help="Start timestamp (Unix epoch)")
