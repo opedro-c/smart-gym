@@ -136,5 +136,16 @@ services:
       mosquitto:
         condition: service_healthy
 
+  frontend:
+    restart: unless-stopped
+    env_file: .env
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - smart_gym_network
+
 networks:
   smart_gym_network:
