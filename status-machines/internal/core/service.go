@@ -67,14 +67,14 @@ func (wss *StatusService) broadcastStatus(status StatusMachine) {
 
 	message, err := json.Marshal(status)
 	if err != nil {
-		slog.Info(fmt.Sprintf("Error marshaling status to JSON: %s", err))
+		slog.Info("Error marshaling status to JSON: ", err)
 		return
 	}
 
 	for client := range wss.clients {
 		err := client.WriteMessage(websocket.TextMessage, message)
 		if err != nil {
-			slog.Info(fmt.Sprintf("Error sending message: %s", err))
+			slog.Info("Error sending message: ", err)
 			client.Close()
 			delete(wss.clients, client)
 		}

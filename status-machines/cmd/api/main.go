@@ -46,31 +46,13 @@ func main() {
 	/// ----------
 	/// WS & HTTP
 	/// ----------
-	http.HandleFunc("/ws", withCORS(adapter.HandleConnectionsWsHandler))
-	http.HandleFunc("/status", withCORS(adapter.GetLastStatusHttpHandler))
+	http.HandleFunc("/ws", adapter.HandleConnectionsWsHandler)
+	http.HandleFunc("/status", adapter.GetLastStatusHttpHandler)
 
 	go func() {
-		slog.Info("WebSocket server started on :8087")
+		slog.Info("WebSocket server started on :8080")
 	}()
-	http.ListenAndServe(":8087", nil)
-}
-
-// CORS middleware function
-func withCORS(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		// Set CORS headers
-		w.Header().Set("Access-Control-Allow-Origin", "*") // Allow all origins, modify as needed
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-
-		// Handle preflight request (OPTIONS)
-		if r.Method == http.MethodOptions {
-			return
-		}
-
-		// Call the next handler
-		next(w, r)
-	}
+	http.ListenAndServe(":3030", nil)
 }
 
 func setUpLogger() {
