@@ -14,6 +14,6 @@ type ExerciseCollectionRecord struct {
 	FinishedAt time.Time `json:"finished_at" bson:"finished_at" validate:"required"`
 	OriginID   string    `json:"origin_id" bson:"origin_id" validate:"required"`
 	Data       struct {
-		Weight uint32 `json:"weight" bson:"weight" validate:"required"`
+		Weight uint64 `json:"weight" bson:"weight" validate:"required"`
 	} `json:"data" bson:"data" validate:"required,dive"`
 }
