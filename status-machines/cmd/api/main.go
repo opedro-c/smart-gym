@@ -50,9 +50,9 @@ func main() {
 	http.HandleFunc("/status", adapter.GetLastStatusHttpHandler)
 
 	go func() {
-		slog.Info("WebSocket server started on :8080")
+		slog.Info("WebSocket server started on :7070")
 	}()
-	http.ListenAndServe(":3030", nil)
+	http.ListenAndServe(":7070", nil)
 }
 
 func setUpLogger() {
