@@ -71,6 +71,7 @@ func withCORS(next http.HandlerFunc) http.HandlerFunc {
 		// Call the next handler
 		next(w, r)
 	}
+}
 
 func setUpLogger() {
 	logLevelEnv := config.LogLevel
