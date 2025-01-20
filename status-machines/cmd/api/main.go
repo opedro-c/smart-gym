@@ -50,9 +50,9 @@ func main() {
 	http.HandleFunc("/status", withCORS(adapter.GetLastStatusHttpHandler))
 
 	go func() {
-		slog.Info("WebSocket server started on :8087")
+		slog.Info("WebSocket server started on :7070")
 	}()
-	http.ListenAndServe(":8087", nil)
+	http.ListenAndServe(":7070", nil)
 }
 
 // CORS middleware function
@@ -71,7 +71,6 @@ func withCORS(next http.HandlerFunc) http.HandlerFunc {
 		// Call the next handler
 		next(w, r)
 	}
-}
 
 func setUpLogger() {
 	logLevelEnv := config.LogLevel
