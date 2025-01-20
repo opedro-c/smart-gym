@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { useToast } from '@/components/ui/toast/use-toast'
+import type { UserData } from '~/lib/types';
+import type { GetUserData } from '~/repositories/user';
 const { toast } = useToast()
 
 let users = await useApi().getAllUsers();
@@ -20,10 +22,31 @@ async function updateUser(userIndex: number) {
         })
     }
 }
+
+const newUser = ref({ admin: false, rfid: '', data: { email: '', password: '', username: '' } } as GetUserData);
+async function createUser() {
+    try {
+        await useApi().createUser({ ...newUser.value.data, ...newUser.value });
+        users = await useApi().getAllUsers();
+        showingUsers.value = users;
+    } catch (error) {
+        toast({
+            title: 'Error',
+            description: 'Error creating user',
+            variant: 'destructive',
+        })
+    }
+}
 </script>
 
 <template>
-    <div class="flex justify-center">
+    <div class="flex flex-col items-center justify-center">
+
+        <div class="mt-5">
+            <ButtonEditUser v-model="newUser" @submit="createUser">
+                Criar user
+            </ButtonEditUser>
+        </div>
 
     <div class="max-w-2xl">
         <Table>
@@ -43,7 +66,9 @@ async function updateUser(userIndex: number) {
                     <TableCell>{{ user.data.email  }}</TableCell>
                     <TableCell>{{ user.rfid }}</TableCell>
                     <TableCell>
-                        <ButtonEditUser v-model="users[index]" @submit="updateUser(index)" />
+                        <ButtonEditUser v-model="users[index]" @submit="updateUser(index)">
+                            Editar
+                        </ButtonEditUser>
                     </TableCell>
                 </TableRow>
             </TableBody>

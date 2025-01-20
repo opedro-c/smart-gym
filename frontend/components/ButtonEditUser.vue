@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import type { GetUserData } from '~/repositories/api';
 import type { UserData } from '~/lib/types';
+import type { GetUserData } from '~/repositories/user';
+
 
 const model = defineModel<GetUserData>({required: true})
 
@@ -12,7 +13,7 @@ defineEmits(['submit'])
   <Dialog>
     <DialogTrigger as-child>
       <Button variant="outline">
-        Editar
+        <slot></slot>
       </Button>
     </DialogTrigger>
     <DialogContent class="sm:max-w-[425px]">
