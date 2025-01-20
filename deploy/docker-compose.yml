@@ -10,11 +10,11 @@ services:
       - ./mosquitto:/mosquitto
     networks:
       - smart_gym_network
-    healthcheck:
-      test: ["CMD", "nc", "-z", "localhost", "1883"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    # healthcheck:
+    #   test: ["CMD", "nc", "-z", "localhost", "1883"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 5
 
   mongo:
     image: mongo
@@ -100,9 +100,9 @@ services:
     ports:
       - "3030:3030"
     environment:
+      MQTT_CLIENT_ID: workout-logs
       MOSQUITTO_DOMAIN: ${MOSQUITTO_DOMAIN}
       MQTT_PORT: ${MQTT_PORT}
-      MQTT_CLIENT_ID: ${MQTT_CLIENT_ID}
       MQTT_USERNAME: ${MQTT_USERNAME}
       MQTT_PASSWORD: ${MQTT_PASSWORD}
       MQTT_CLEAN_SESSION: ${MQTT_CLEAN_SESSION}
@@ -111,7 +111,7 @@ services:
     networks:
       - smart_gym_network
     depends_on:
-      mosquitto:
+      postgres: # just to give time to mosquitto start
         condition: service_healthy
     
   status-machines:
@@ -123,9 +123,9 @@ services:
     ports:
       - "7070:7070"
     environment:
+      MQTT_CLIENT_ID: status-machines
       MOSQUITTO_DOMAIN: ${MOSQUITTO_DOMAIN}
       MQTT_PORT: ${MQTT_PORT}
-      MQTT_CLIENT_ID: ${MQTT_CLIENT_ID}
       MQTT_USERNAME: ${MQTT_USERNAME}
       MQTT_PASSWORD: ${MQTT_PASSWORD}
       MQTT_CLEAN_SESSION: ${MQTT_CLEAN_SESSION}
@@ -133,7 +133,7 @@ services:
     networks:
       - smart_gym_network
     depends_on:
-      mosquitto:
+      postgres: # just to give time to mosquitto start
         condition: service_healthy
 
   frontend:
