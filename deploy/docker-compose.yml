@@ -5,11 +5,16 @@ services:
     container_name: mosquitto
     restart: unless-stopped
     ports:
-      - "${MQTT_PORT}:${MQTT_PORT}"
+      - "1883:1883"
     volumes:
       - ./mosquitto:/mosquitto
     networks:
       - smart_gym_network
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "1883"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   mongo:
     image: mongo
@@ -21,6 +26,24 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
     networks:
       - smart_gym_network
+
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_DATABASE}
+    ports:
+      - "5432:5432"
+    networks:
+      - smart_gym_network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${DATABASE_USERNAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
 
   mongo-express:
     image: mongo-express
@@ -34,35 +57,25 @@ services:
       ME_CONFIG_BASICAUTH: false
     networks:
       - smart_gym_network
-    depends_on:
-      - mongo
-
-  postgres:
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: ${DATABASE_USERNAME}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_DB: ${DATABASE_DATABASE}
-    ports:
-      - "5432:5432"
-    networks:
-      - smart_gym_network
 
   core-service:
+    restart: always
+    env_file: .env
     build:
       context: ../core-service
       dockerfile: Dockerfile
-    env_file: .env
-    restart: always
     ports:
       - "8080:8080"
     environment:
       DATABASE_URL: ${DATABASE_URL}
-    depends_on:
-      - postgres
     networks:
       - smart_gym_network
+    depends_on:
+      core-service-migrate:
+        condition: service_completed_successfully
+      postgres:
+          condition: service_healthy
+
 
   core-service-migrate:
     image: golang:1.23-alpine
@@ -72,20 +85,18 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_URL}
     command: [ "go", "run", "internal/postgres/migrate.go" ]
-    depends_on:
-      - postgres
     networks:
       - smart_gym_network
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   workout-logs:
+    restart: unless-stopped
+    env_file: .env
     build:
       context: ../workout-logs
       dockerfile: Dockerfile
-    env_file: .env
-    depends_on:
-      - mosquitto
-      - mongo
-      - mongo-express
     ports:
       - "3030:3030"
     environment:
@@ -97,9 +108,11 @@ services:
       MQTT_CLEAN_SESSION: ${MQTT_CLEAN_SESSION}
       MQTT_TOPIC_PREFIX: ${MQTT_TOPIC_PREFIX}
       MONGODB_URL: mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@mongo:27017
-    restart: unless-stopped
     networks:
       - smart_gym_network
+    depends_on:
+      mosquitto:
+        condition: service_healthy
 
 networks:
   smart_gym_network:
