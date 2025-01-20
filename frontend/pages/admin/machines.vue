@@ -29,7 +29,7 @@ async function createMachine() {
     } catch (error) {
         toast({
             title: 'Error',
-            description: 'Error creating user',
+            description: 'Error creating machine',
             variant: 'destructive',
         })
     }

@@ -46,7 +46,9 @@ onUnmounted(() => {
  <FormLogin @submit="onSubmit">
    <h1 class="text-2xl font-semibold">Login</h1>
    <small class="text-sm text-muted-foreground">
-     Entre no sistema para poder desfrutar das funcionalidades.
+     Entre no sistema para poder desfrutar das funcionalidades. 
+     <br>
+     Para admins faça login <NuxtLink to="/admin">AQUI</NuxtLink>
     </small>
   </FormLogin>
 </template>

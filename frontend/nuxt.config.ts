@@ -7,6 +7,13 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     'shadcn-nuxt',
     '@nuxtjs/color-mode',
-    '@vueuse/nuxt'
-  ]
+    '@vueuse/nuxt',
+    'nuxt-echarts'
+  ],
+  echarts: {
+    ssr: false,
+    renderer: ['canvas', 'svg'],
+    charts: ['BarChart', 'LineChart', 'LinesChart'],
+    components: ['DatasetComponent', 'GridComponent', 'TooltipComponent'],
+  },
 })

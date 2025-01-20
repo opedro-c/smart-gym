@@ -15,10 +15,13 @@
     "@vee-validate/zod": "^4.15.0",
     "@vueuse/core": "^12.4.0",
     "@vueuse/nuxt": "^12.4.0",
+    "apexcharts": "^4.3.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "echarts": "^5.6.0",
     "lucide-vue-next": "^0.471.0",
     "nuxt": "^3.15.1",
+    "nuxt-echarts": "^0.2.4",
     "radix-vue": "^1.9.12",
     "shadcn-nuxt": "^0.11.3",
     "tailwind-merge": "^2.6.0",
@@ -26,6 +29,7 @@
     "vee-validate": "^4.15.0",
     "vue": "latest",
     "vue-router": "latest",
+    "vue3-apexcharts": "^1.8.0",
     "zod": "^3.24.1"
   }
 }
