@@ -6,10 +6,11 @@
 const char* ssid     = "POCO X3 Pro";
 const char* password = "senhacomplicadaegrande";
 
-const char* mqtt_server = "192.168.95.89";
+const char* mqtt_server = "192.168.156.89";
 const int mqtt_port = 1883;
 const char* mqtt_exercise_topic = "/exercise";
-const char* mqtt_machine_status_topic = "/machine_status";
+const char* mqtt_machine_status_on_topic = "/machine_status/on";
+const char *mqtt_machine_status_off_topic = "/machine_status/off";
 const char* mqtt_user = "pedroc_aragao@outlook.com";
 const char* mqtt_password = "senhacomplicadaegrande";
 
@@ -75,7 +76,7 @@ void publishExerciseRecord(ExerciseRecord* record, size_t recordLength) {
     }
 }
 
-void publishMachineStatus(const char* machine) {
+void publishMachineStatusOn(const char* machine) {
     uint8_t retries = 3;
     while (!client.connected() && retries > 0) {
         Serial.println("Reconnecting to MQTT...");
@@ -87,7 +88,28 @@ void publishMachineStatus(const char* machine) {
             retries--;
         }
     }
-    if (client.publish(mqtt_machine_status_topic, machine)) {
+    if (client.publish(mqtt_machine_status_on_topic, machine)) {
+        Serial.println("Published message to MQTT.");
+    } else {
+        Serial.print("Client state: ");
+        Serial.println(client.state());
+        Serial.println("Failed to publish message to MQTT.");
+    }
+}
+
+void publishMachineStatusOff(const char* machine) {
+    uint8_t retries = 3;
+    while (!client.connected() && retries > 0) {
+        Serial.println("Reconnecting to MQTT...");
+        if (client.connect("ESP32Client", mqtt_user, mqtt_password)) {
+            Serial.println("Connected to MQTT broker.");
+        } else {
+            Serial.print("Failed to connect. State: ");
+            Serial.println(client.state());
+            retries--;
+        }
+    }
+    if (client.publish(mqtt_machine_status_off_topic, machine)) {
         Serial.println("Published message to MQTT.");
     } else {
         Serial.print("Client state: ");

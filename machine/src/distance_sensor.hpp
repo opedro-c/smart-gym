@@ -24,9 +24,10 @@ TimerHandle_t setTimerHandle = NULL;
 TimerHandle_t secondsTimerHandle = NULL;
 
 EventGroupHandle_t updateLcdEventGroup = NULL;
+xQueueHandle userIdQueue = xQueueCreate(1, sizeof(uint64_t));
 
 ExerciseRecord exerciseRecords[MAX_EXERCISES];
-ExerciseRecord exerciseRecord = newExerciseRecord(user_id, origin_id);
+ExerciseRecord exerciseRecord = newExerciseRecord(0, origin_id);
 
 void addExerciseRecord()
 {
@@ -57,7 +58,7 @@ void finishCurrentExercise(TimerHandle_t xTimer)
     seconds = 0;
     xEventGroupSetBits(updateLcdEventGroup, BIT_WAITING_RFID);
     xTimerStop(secondsTimerHandle, portMAX_DELAY);
-
+    publishMachineStatusOff((char *)origin_id);
     exerciseRecord.dataLength = 0;
 }
 
@@ -84,6 +85,13 @@ void countNumberOfRepetitions(void *pvParameters)
     {
 
         int distance = measureWeightDistance();
+        uint64_t newUserId;
+        if (xQueueReceive(userIdQueue, &newUserId, 0) == pdTRUE) {
+            exerciseRecord.userID = newUserId;
+            Serial.print("User ID received: ");
+            Serial.println(newUserId);
+        }
+
 
         if (distance <= DISTANCE_THRESHOLD_PUSH && !isStillLifted && !(distance == FAIL_TO_READ))
         {

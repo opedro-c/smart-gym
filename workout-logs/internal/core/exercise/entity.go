@@ -6,7 +6,7 @@ import (
 )
 
 type ExerciseRecord struct {
-	UserID   string         `json:"user_id" validate:"required"`
+	UserID   uint64         `json:"user_id" validate:"required"`
 	OriginID string         `json:"origin_id" validate:"required"`
 	Data     []ExerciseData `json:"data" validate:"required,dive"`
 }
