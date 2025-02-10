@@ -1,10 +1,21 @@
 # Smart Gym
+Smart Gym is a complete system designed for monitoring and recording gym equipment usage and repetitions. The system integrates hardware and software components to track exercise data in real-time.
 
-![image](https://github.com/user-attachments/assets/48e275fd-d0b4-485d-a528-ebc1ca7b5eb6)
+This project utilizes an ESP32 microcontroller with multiple sensors to collect data and send it to a backend, which is built using a microservices architecture. A frontend application is also included to visualize the data in real-time.
 
-![image](https://github.com/user-attachments/assets/1c6f5361-465a-4c76-90ff-67d4b7f59828)
+# Architecture
 
+### Machine / Esp32 circuit
 ![image](https://github.com/user-attachments/assets/5ba729d1-7f38-4fbe-b03e-3ff90ea889ed)
+
+### Backend and ESP32 communication architecture
+![image](https://github.com/user-attachments/assets/9bed1ee2-f3f3-40d5-a74b-783d84c67ed9)
+
+
+### Frontend communication architecture
+![image](https://github.com/user-attachments/assets/77236f1b-4bed-4a02-87af-a3600e0df5ec)
+
+
 
 
 # :wrench: Technologies Used
